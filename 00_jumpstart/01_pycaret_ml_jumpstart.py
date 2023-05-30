@@ -27,34 +27,77 @@ sql.inspect(engine).get_table_names()
 
 # * Subscribers ---
 
+subscribers_df = pd.read_sql(
+    sql = "SELECT * FROM Subscribers",
+    con = conn
+)
 
 # * Transactions
 
+transactions_df = pd.read_sql(
+    sql = "SELECT * FROM Transactions",
+    con = conn
+)
 
 # *Close Connection ----
 
+conn.close()
 
 
 # 2.0 SIMPLIFIED DATA PREP ----
 
+subscribers_joined_df = subscribers_df
 
+emails_made_purchase = transactions_df['user_email']\
+    .unique()
+    
+subscribers_joined_df['made_purchase'] = subscribers_joined_df['user_email']\
+    .isin(emails_made_purchase)\
+    .astype('int')    
+
+subscribers_joined_df
 
 # 3.0 QUICKSTART MACHINE LEARNING WITH PYCARET ----
 
 # * Subset the data ----
 
+df = subscribers_joined_df[['member_rating', 'country_code', 'made_purchase']]
 
 # * Setup the Classifier ----
 
+clf_1 = clf.setup(
+    data       = df,
+    target     = "made_purchase",
+    train_size = 0.8,
+    session_id  = 123
+)
+
+clf_1
 
 # * Make A Machine Learning Model ----
 
+xgb_model =clf.create_model(
+    estimator = "xgboost"
+)
 
 # * Finalize the model ----
 
+xgb_model_finalized = clf.finalize_model(xgb_model)
 
 # * Predict -----
 
+new_df = pd.DataFrame(
+    dict(
+        member_rating = [5],
+        country_code = ["us"]
+    )
+)
+
+clf.predict_model(
+    estimator = xgb_model_finalized,
+    data      = new_df,
+    raw_score = True
+)
 
 # * Save the Model ----
 
