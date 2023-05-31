@@ -25,10 +25,11 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 # Create the app object
 
+app = FastAPI()
 
 # Load trained Pipeline
 
-
+model = clf.load_model("00_jumpstart/models/xgb_model_finalized")
 
 # 1.0 MAIN ----
 
@@ -38,6 +39,8 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 
 
+if __name__ =='main':
+    main()
 
 # CONCLUSIONS ----
 # * FASTAPI IS VERY EASY TO SET UP

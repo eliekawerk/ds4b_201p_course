@@ -101,10 +101,18 @@ clf.predict_model(
 
 # * Save the Model ----
 
+os.mkdir("00_jumpstart/models")
 
+clf.save_model(
+    model      = xgb_model_finalized,
+    model_name = "00_jumpstart/models/xgb_model_finalized"
+)
 
 # * Load the model -----
 
+clf.load_model(
+    model_name = "00_jumpstart/models/xgb_model_finalized"
+    )
 
 
 # CONCLUSIONS:
