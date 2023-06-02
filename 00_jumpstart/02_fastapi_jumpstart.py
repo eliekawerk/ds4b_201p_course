@@ -32,12 +32,44 @@ app = FastAPI()
 model = clf.load_model("00_jumpstart/models/xgb_model_finalized")
 
 # 1.0 MAIN ----
-
+@app.get("/")
+async def main():
+    
+    content = """
+    <body>
+    <h1>Welcome to Email Lead Scoring Project</h1>
+    <p>Navigate to <code>docs</code> to see the API 
+    documentation</p>
+    </body>
+    """
+    return HTMLResponse(content)
 
 
 # 2.0 PREDICT ENDPOINT ----
 
-
+@app.post("/predict")
+async def predict(member_rating, country_code):
+    
+    #Convert API request inputs to data frame
+    
+    df = pd.DataFrame(
+        [[member_rating, country_code]]
+    )
+    
+    df.columns =['member_rating', 'country_code']
+    
+    # Make Predictions
+    predictions_df = clf.predict_model(
+        estimator  = model,
+        data       = df,
+        raw_score  = True 
+    )
+    print(predictions_df)
+    
+    #JSON and Dictionary
+    predictions_dict = predictions_df.to_dict()
+    
+    return JSONResponse(content = predictions_dict)
 
 if __name__ =='main':
     main()
