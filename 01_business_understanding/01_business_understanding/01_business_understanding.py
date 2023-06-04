@@ -73,8 +73,56 @@ cost_no_growth_1
 # 2.5% growth scenario: 
 #   amount = principle * ((1+rate)**time)
 
+growth_rate = 3500/100000
 
+100000 *(1+ growth_rate)**0
 
+100000 *(1+ growth_rate)**1
+
+100000 *(1+ growth_rate)**6
+
+100000 *(1+ growth_rate)**11
+
+# Cost Table
+
+time =12
+# Period
+
+period_series = pd.Series(np.arange(0, 12), name = "period")
+
+len(period_series)
+
+cost_table_df = period_series.to_frame()
+
+# Email Size - No Growth
+
+cost_table_df['email_size_no_growth'] = np.repeat(email_list_size_1, time)
+
+cost_table_df
+
+# Lost Customers NO Growth
+
+cost_table_df['lost_customers_no_growth'] = cost_table_df['email_size_no_growth'] * unsub_rate_1 * sales_emails_per_month_1
+
+cost_table_df
+
+# Cost- No Growth 
+
+cost_table_df['cost_no_growth'] = cost_table_df['lost_customers_no_growth'] * conversion_rate_1 * average_customer_value
+
+cost_table_df
+
+ # Email Size - With Growth
+ 
+cost_table_df['email_size_with_growth'] = cost_table_df['email_size_no_growth'] * (1 + growth_rate)**cost_table_df['period']
+ 
+cost_table_df 
+
+px.line(
+    data_frame = cost_table_df,
+    y          = ['email_size_no_growth', 'email_size_with_growth']
+)\
+    .add_hline(y = 0)
 # If reduce unsubscribe rate by 30%
 
 
