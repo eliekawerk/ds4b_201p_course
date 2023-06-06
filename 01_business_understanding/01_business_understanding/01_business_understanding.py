@@ -123,9 +123,39 @@ px.line(
     y          = ['email_size_no_growth', 'email_size_with_growth']
 )\
     .add_hline(y = 0)
+    
+# Lost Customers With Growth
+    
+cost_table_df['lost_customers_with_growth'] = cost_table_df['email_size_with_growth'] * unsub_rate_1 * sales_emails_per_month_1    
+    
+cost_table_df  
+
+# Cost - With Growth
+
+cost_table_df['cost_with_growth'] = cost_table_df['lost_customers_with_growth'] *  conversion_rate_1 * average_customer_value
+
+cost_table_df
+
+px.line(
+    cost_table_df,
+    y = ['cost_no_growth', 'cost_with_growth']
+)\
+    .add_hline(y = 0)
+    
+    
+# Compare Cost - With / No Growth
+
+cost_table_df[['cost_no_growth', 'cost_with_growth']]\
+    .sum()
+ 
+3.65 / 3   
+ 
+ 
 # If reduce unsubscribe rate by 30%
 
+cost_table_df['cost_no_growth'].sum() * 0.30
 
+cost_table_df['cost_with_growth'].sum() * 0.30
 
 # COST CALCULATION FUNCTIONS ----
 
