@@ -161,10 +161,73 @@ cost_table_df['cost_with_growth'].sum() * 0.30
 
 # Function: Calculate Monthly Unsubscriber Cost Table ----
 
+def cost_calc_monthly_cost_table(
+    email_list_size            = 1e5,
+    email_list_growth_rate     = 0.035,
+    sales_emails_per_month     = 5,
+    unsub_rate_per_sales_email = 0.005,
+    customer_conversion_rate   = 0.05,
+    average_customer_value     = 2000,
+    n_periods                  = 12
+):
+    # Period
+    period_series = pd.Series(np.arange(0, n_periods), name = "period")
 
-# Function: Sumarize Cost ----
+    cost_table_df = period_series.to_frame()
+    
+    # Email Size - No Growth
+    
+    cost_table_df['email_size_no_growth'] = np.repeat(email_list_size, n_periods)
+    
+    # Lost Customers - No Growth
+    
+    cost_table_df['lost_customers_no_growth'] = cost_table_df['email_size_no_growth'] * unsub_rate_per_sales_email * sales_emails_per_month
+    
+    # Lost Revenue - No Growth
+    
+    cost_table_df['cost_no_growth'] = cost_table_df['lost_customers_no_growth'] * customer_conversion_rate * average_customer_value
+    
+    # Email Size - With Growth
+    
+    cost_table_df['email_size_with_growth'] = cost_table_df['email_size_no_growth'] * (1 + email_list_growth_rate)**cost_table_df['period']
+    
+    # Lost Customers - With Growth
+    
+    cost_table_df['lost_customers_with_growth'] = cost_table_df['email_size_with_growth'] * unsub_rate_per_sales_email * sales_emails_per_month     
+    
+    # Cost - With Growth
+    
+    cost_table_df['cost_with_growth'] = cost_table_df['lost_customers_with_growth'] *  customer_conversion_rate * average_customer_value
+
+    
+    return cost_table_df
 
 
+cost_calc_monthly_cost_table(
+    email_list_size            = 50000,
+    sales_emails_per_month     = 1,
+    unsub_rate_per_sales_email = 0.001,
+    n_periods                  = 24
+    )
+
+# Function: Summarize Cost ----
+
+cost_table_df[['cost_no_growth', 'cost_with_growth']]\
+    .sum()\
+    .to_frame()\
+    .transpose()        
+
+def cost_total_unsub_cost(cost_table):
+    
+    summary_df = cost_table[['cost_no_growth', 'cost_with_growth']]\
+    .sum()\
+    .to_frame()\
+    .transpose()  
+    
+    return summary_df
+
+
+cost_total_unsub_cost(cost_table_df)
 
 # ARE OBJECTIVES BEING MET?
 # - We can see a large cost due to unsubscription
