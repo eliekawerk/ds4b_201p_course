@@ -331,9 +331,6 @@ simulation_results_wide_df = cost_simulate_unsub_costs(
         values  = 'cost_with_growth'
     )    
 
-
-# Function: Plot Simulated Unsubscriber Costs
-
 px.imshow(
     simulation_results_wide_df,
     origin = 'lower',
@@ -345,6 +342,50 @@ px.imshow(
         color = 'Cost of Unsubscription'
     )
 )
+
+# Function: Plot Simulated Unsubscriber Costs
+
+def cost_plot_simulated_unsub_costs(simulation_results):
+    
+    simulation_results_wide_df = simulation_results\
+    .drop('cost_no_growth', axis = 1)\
+    .pivot(
+        index   = 'email_list_monthly_growth_rate',
+        columns = 'customer_conversion_rate',
+        values  = 'cost_with_growth'
+    )  
+    
+    fig = px.imshow(
+    simulation_results_wide_df,
+    origin = 'lower',
+    aspect = 'auto',
+    title  = 'Lead Cost Simulation',
+    labels = dict(
+        x     = 'Customer Conversion Rate',
+        y     = 'Monthly Email Growth Rate',
+        color = 'Cost of Unsubscription'
+        
+        )  
+    )
+    
+    return fig
+
+cost_plot_simulated_unsub_costs(
+    cost_simulate_unsub_costs(
+    email_list_monthly_growth_rate = [0.01, 0.02, 0.03],
+    customer_conversion_rate       = [0.04, 0.05, 0.06],
+    email_list_size                = 100000
+    ) 
+)
+
+cost_simulate_unsub_costs(
+    email_list_monthly_growth_rate = [0.01, 0.02, 0.03],
+    customer_conversion_rate       = [0.04, 0.05, 0.06],
+    email_list_size                = 100000
+    )\
+    .pipe(cost_plot_simulated_unsub_costs)   
+
+
 
 
 
