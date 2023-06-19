@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import janitor as jn
 import plotly.express as px
+import pandas_flavor as pf
 
 def cost_calc_monthly_cost_table(
     email_list_size            = 1e5,
@@ -59,6 +60,7 @@ def cost_calc_monthly_cost_table(
     
     return cost_table_df
 
+@pf.register_dataframe_method
 def cost_total_unsub_cost(cost_table):
     """ Takes the input from cost_calc_monthly_cost_table(),
     and produces a summary of the total costs.
@@ -77,3 +79,84 @@ def cost_total_unsub_cost(cost_table):
     .transpose()  
     
     return summary_df
+
+
+def cost_simulate_unsub_costs(
+    email_list_monthly_growth_rate = [0, 0.035],
+    customer_conversion_rate = [0.04, 0.05, 0.06],
+    **kwargs
+):
+    """ Generate a cost analysis simulation to characterize cost uncertainty.
+
+    Args:
+        email_list_monthly_growth_rate (list, optional): List of values for email monthly growth rate to simulate. Defaults to [0, 0.035].
+        customer_conversion_rate (list, optional): List of values for customer conversion rate to simulate. Defaults to [0.4, 0.5, 0.5].
+
+    Returns:
+        DataFrame: Cartesian Product of the email list and customer conversion rate is calculated and total unsubscriber costs are calculated.
+    """
+    
+    # Parameter Grid
+    data_dict = dict(
+    email_list_monthly_growth_rate = email_list_monthly_growth_rate,
+    customer_conversion_rate       = customer_conversion_rate
+    )
+
+    parameter_grid_df = jn.expand_grid(others = data_dict)
+    
+    # Temporary Function
+    
+    def temporary_function(x,y):
+        cost_table_df = cost_calc_monthly_cost_table(
+            email_list_growth_rate   = x,
+            customer_conversion_rate = y,
+            **kwargs
+        )
+        summary_df = cost_total_unsub_cost(cost_table_df)
+    
+        return summary_df
+    #List Comprehension
+    summary_list = [temporary_function(x,y) for x,y in zip(
+    parameter_grid_df['email_list_monthly_growth_rate'],
+    parameter_grid_df['customer_conversion_rate'])]
+
+    simulation_results_df = pd.concat(summary_list, axis = 0)\
+        .reset_index()\
+        .drop('index', axis = 1)\
+        .merge(parameter_grid_df, left_index = True, right_index = True)
+    
+    return simulation_results_df
+
+@pf.register_dataframe_method
+def cost_plot_simulated_unsub_costs(simulation_results):
+    """ A plotting function to plot results from cost_simulate_unsub_costs()
+
+    Args:
+        simulation_results (DataFrame): Output from cost_simulate_unsub_costs()
+
+    Returns:
+        Plotly Plot: Heatmap that visualizes the cost simulation.
+    """
+    
+    simulation_results_wide_df = simulation_results\
+    .drop('cost_no_growth', axis = 1)\
+    .pivot(
+        index   = 'email_list_monthly_growth_rate',
+        columns = 'customer_conversion_rate',
+        values  = 'cost_with_growth'
+    )  
+    
+    fig = px.imshow(
+    simulation_results_wide_df,
+    origin = 'lower',
+    aspect = 'auto',
+    title  = 'Lead Cost Simulation',
+    labels = dict(
+        x     = 'Customer Conversion Rate',
+        y     = 'Monthly Email Growth Rate',
+        color = 'Cost of Unsubscription'
+        
+        )  
+    )
+    
+    return fig

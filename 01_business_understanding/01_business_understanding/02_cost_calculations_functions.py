@@ -18,5 +18,18 @@ els.cost_calc_monthly_cost_table()
 els.cost_total_unsub_cost()
 ?els.cost_total_unsub_cost
 
+els.cost_calc_monthly_cost_table()\
+    .cost_total_unsub_cost()
+    
+?els.cost_simulate_unsub_costs 
+
+els.cost_simulate_unsub_costs()   
+?els.cost_plot_simulated_unsub_costs
+
+els.cost_simulate_unsub_costs(
+    email_list_monthly_growth_rate = [0, 0.015, 0.025, 0.035]
+)\
+    .cost_plot_simulated_unsub_costs()
+
 
 
