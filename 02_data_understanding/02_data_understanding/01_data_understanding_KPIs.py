@@ -26,27 +26,67 @@ import email_lead_scoring as els
 # ?els.cost_calc_monthly_unsub_cost_table
 
 els.cost_simulate_unsub_costs(
-    email_list_monthly_growth_rate=np.linspace(0, 0.03, 5),
-    customer_conversion_rate=np.linspace(0.4, 0.6, 3),
-    sales_emails_per_month=5,
-    unsub_rate_per_sales_email=0.001,
-    email_list_size=1e5
+    email_list_monthly_growth_rate = np.linspace(0, 0.03, 5),
+    customer_conversion_rate       = np.linspace(0.4, 0.6, 3),
+    sales_emails_per_month         = 5,
+    unsub_rate_per_sales_email     = 0.001,
+    email_list_size                = 1e5
 ) \
     .pipe(func=els.cost_plot_simulated_unsub_costs)
 
 
 # 1.0 CONNECTING TO SQLITE DATABASE ----
 
+url = "sqlite:///00_database/crm_database.sqlite"
 
+engine = sql.create_engine(url)
+engine
+
+conn = engine.connect()
+conn
+
+inspect = sql.inspect(engine)
+
+table_names = inspect.get_table_names()
 
 # 2.0 COLLECT DATA ----
 
 # Products ----
 
+products_df = pd.read_sql(
+    sql = "SELECT * FROM Products",
+    con = conn
+)
 
+products_df.head()
 
+products_df.shape
+
+products_df.info()
+
+products_df['product_id'] = products_df['product_id'].astype('int')
+
+products_df.info()
+
+products_df.head()
 # Subscribers ----
 
+table_names[1]
+
+subscribers_df = pd.read_sql(
+    sql = f"SELECT * FROM {table_names[1]}",
+    con =conn
+)
+
+subscribers_df.info()
+
+subscribers_df.head()
+
+subscribers_df['mailchimp_id'] = subscribers_df['mailchimp_id'].astype('int')
+
+subscribers_df['member_rating'] = subscribers_df['member_rating'].astype('int')
+
+subscribers_df['optin_time'] = subscribers_df['optin_time'].astype('datetime64')
 
 
 # Tags ----
