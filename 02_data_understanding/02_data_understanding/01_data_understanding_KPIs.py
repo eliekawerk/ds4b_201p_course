@@ -88,23 +88,54 @@ subscribers_df['member_rating'] = subscribers_df['member_rating'].astype('int')
 
 subscribers_df['optin_time'] = subscribers_df['optin_time'].astype('datetime64')
 
-
 # Tags ----
 
+table_names
 
+tags_df = pd.read_sql("SELECT * FROM Tags", conn)
+
+tags_df['mailchimp_id'] = tags_df['mailchimp_id'].astype('int')
+
+tags_df.head()
+
+tags_df['tag'].unique()
+
+tags_df.info()
 
 # Transactions ----
 
+transactions_df = pd.read_sql("SELECT * FROM Transactions", conn)
 
+transactions_df.head()
+
+transactions_df.info()
+
+transactions_df['purchased_at'] = transactions_df['purchased_at'].astype('datetime64')
+
+transactions_df['product_id'] = transactions_df['product_id'].astype('int')
 
 # Website ----
 
+website_df = pd.read_sql("SELECT * FROM Website", conn)
 
+website_df.info()
+
+website_df['date'] = website_df['date'].astype('datetime64')
+
+website_df['pageviews'] = website_df['pageviews'].astype('int')
+
+website_df['organicsearches'] = website_df['organicsearches'].astype('int')
+
+website_df['sessions'] = website_df['sessions'].astype('int')
 
 # Close Connection ----
 # - Note: a better practice is to use `with`
 
+conn.close()
 
+with engine.connect() as conn:
+    website_df = pd.read_sql("SELECT * FROM Website", conn)
+    
 
 # 3.0 COMBINE & ORGANIZE DATA ----
 # - Problem is related to probability of purchase from email list
@@ -115,11 +146,21 @@ subscribers_df['optin_time'] = subscribers_df['optin_time'].astype('datetime64')
 
 # Make Target Feature
 
+subscribers_df
 
+emails_made_purchase = transactions_df['user_email'].unique()
+
+subscribers_df['made_purchase'] = subscribers_df['user_email']\
+    .isin(emails_made_purchase)\
+    .astype('int')    
 
 # Who is purchasing?
 
+count_made_purchase = subscribers_df['made_purchase'].sum()
 
+total_subscribers = len(subscribers_df['made_purchase'])
+
+count_made_purchase / total_subscribers
 
 # By Geographic Regions (Countries)
 
