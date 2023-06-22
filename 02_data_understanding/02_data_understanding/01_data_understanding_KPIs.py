@@ -164,19 +164,61 @@ count_made_purchase / total_subscribers
 
 # By Geographic Regions (Countries)
 
-    
+by_geography_df = subscribers_df \
+    .groupby('country_code')\
+    .agg(
+        dict(made_purchase = ['sum', lambda x: sum(x) / len(x)])
+    )\
+    .set_axis(['sales','prop_in_group'], axis = 1)\
+    .assign(prop_overall = lambda x: x['sales'] / sum(x['sales']) )\
+    .sort_values(by = 'sales', ascending = False)\
+    .assign(prop_cumsum = lambda x: x['prop_overall'].cumsum())    
 
+by_geography_df
+    
 # - Top 80% countries 
 
-
+by_geography_df\
+    .query("prop_cumsum <= 0.80")
 
 # - High Conversion Countries (>8% conversion)
 
+by_geography_df\
+    .query("prop_in_group >= 0.08")
+    
+by_geography_df.quantile(q = [0.10, 0.50, 0.90])   
 
+by_geography_df.mean() 
 
 # By Tags (Events)
 
+tags_df\
+    .groupby('tag')\
+    .agg(dict(tag ='count'))
+    
+user_events_df = tags_df\
+    .groupby('mailchimp_id')\
+    .agg(dict(tag = 'count'))\
+    .set_axis(['tag_count'], axis = 1)\
+    .reset_index()                    
 
+subscribers_joined_df = subscribers_df\
+    .merge(user_events_df, how ='left')\
+    .fillna(dict(tag_count = 0)) 
+
+subscribers_joined_df['tag_count'] = subscribers_joined_df['tag_count'].astype('int')
+
+subscribers_joined_df.info()
+
+# Analyzing Tag Count Proportions
+
+subscribers_joined_df\
+    .groupby('made_purchase')\
+    .quantile([0.1, 0.5, 0.9]) 
+    
+subscribers_joined_df\
+    .groupby('made_purchase')\
+    .mean()       
 
 # 4.0 SWEETVIZ EDA REPORT
 
