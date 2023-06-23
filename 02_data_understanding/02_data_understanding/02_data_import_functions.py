@@ -15,19 +15,33 @@ import sqlalchemy as sql
 
 # Read & Combine Raw Data
 
+def db_read_els_data(conn_string =  "sqlite:///00_database/crm_database.sqlite"):
+    
+    # Connect to Engine
+    
+    engine = sql.create_engine(conn_string)
+    
+    # Raw Data Collection
+    with engine.connect() as conn:
+        
+        # Subscribers
+        
+        # Tags
+        
+        # Transactions
+    
+    
+    # Read Table Names
 
 
-# Read Table Names
 
-
-
-# Get Raw Table
+    # Get Raw Table
 
 
 
 
 
-# TEST IT OUT -----
+    # TEST IT OUT -----
 
 
 
