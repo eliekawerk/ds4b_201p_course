@@ -1,13 +1,7 @@
-# BUSINESS SCIENCE UNIVERSITY
-# COURSE: DS4B 201-P PYTHON MACHINE LEARNING
-# MODULE 2: DATA UNDERSTANDING
-# PART 2: DATA IMPORT FUNCTIONS
-# ----
 
 # LIBRARIES ----
 
 import pandas as pd
-import numpy as np
 import sqlalchemy as sql
 
 
@@ -16,6 +10,15 @@ import sqlalchemy as sql
 # Read & Combine Raw Data
 
 def db_read_els_data(conn_string =  "sqlite:///00_database/crm_database.sqlite"):
+    """Function to read in the Subsribers, Tags and Transactions tables and combine them into a DataFrame
+    with tag_count and made_purchase columns.
+
+    Args:
+        conn_string (str, optional): _description_. Defaults to "sqlite:///00_database/crm_database.sqlite".
+
+    Returns:
+        Pandas DataFrame
+    """
     
     # Connect to Engine
     
@@ -68,22 +71,38 @@ def db_read_els_data(conn_string =  "sqlite:///00_database/crm_database.sqlite")
         
         
     return subscribers_joined_df
-    
+
 # Read Table Names
 
 def db_read_els_table_names(conn_string = "sqlite:///00_database/crm_database.sqlite"):
+    """Reads the Table Names for each table in CRM database.
+
+    Args:
+        conn_string (str, optional): _description_. Defaults to "sqlite:///00_database/crm_database.sqlite".
+
+    Returns:
+        List with names of tables.
+    """
     engine = sql.create_engine(conn_string)
     inspect = sql.inspect(engine)
     table_names = inspect.get_table_names()
 
     return table_names
 
-db_read_els_table_names()
-
 
 # Get Raw Table
 
 def db_read_raw_ets_table(table ="Products", conn_string = "sqlite:///00_database/crm_database.sqlite"):
+    """Reads a single raw table from the CRM database
+
+    Args:
+        table (str, optional): _Table Name. Defaults to "Products". 
+        See db_read_els_table_names() to get full list of table names.
+        conn_string (str, optional): _description_. Defaults to "sqlite:///00_database/crm_database.sqlite".
+
+    Returns:
+        Pandas DataFrame
+    """
     engine = sql.create_engine(conn_string)
     with engine.connect() as conn:
 
@@ -93,19 +112,3 @@ def db_read_raw_ets_table(table ="Products", conn_string = "sqlite:///00_databas
         )
     
     return table_df
-    # TEST IT OUT -----
-
-db_read_els_data().info()
-
-db_read_els_table_names()
-
-db_read_raw_ets_table("Website")
-
-
-import email_lead_scoring as els
-
-els.db_read_els_data()
-
-els.db_read_els_data()
-
-els.db_read_els_table_names()
