@@ -106,6 +106,6 @@ import email_lead_scoring as els
 
 els.db_read_els_data()
 
-els.db_read_els_data()
-
 els.db_read_els_table_names()
+
+els.db_read_raw_ets_table()
