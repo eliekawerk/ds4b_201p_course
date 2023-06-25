@@ -12,3 +12,8 @@ from .database import(
     db_read_els_table_names,
     db_read_raw_ets_table
 )
+
+from .exploratory import(
+    explore_sales_by_category,
+    explore_sales_by_numeric
+)

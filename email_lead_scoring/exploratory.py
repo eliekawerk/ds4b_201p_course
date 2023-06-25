@@ -1,24 +1,20 @@
-# BUSINESS SCIENCE UNIVERSITY
-# COURSE: DS4B 201-P PYTHON MACHINE LEARNING
-# MODULE 2: DATA UNDERSTANDING: EXPLORATORY
-# 
-# ----
-
-# LIBRARIES ----
-
 import pandas as pd
 import numpy as np
 
-# Data
-
-import email_lead_scoring as els
-
-df = els.db_read_els_data()
 
 # Function: Explore Sales By Category  
 
 def explore_sales_by_category(data, category = 'country_code', sort_by = ['sales', 'prop_in_group']):
-    
+    """This function explores the 'made_purchase' column by a categorical column
+
+    Args:
+        data (DataFrame): The subscriber data with a column 'made_purchase'
+        category (str, optional): A categorical column. Defaults to 'country_code'
+        sort_by (list, optional): A column to sort by. One of ['sales', 'prop_in_group'].
+
+    Returns:
+        _type_: DataFrame
+    """
     # Handle sort by
     if (type(sort_by) is list):
         sort_by = sort_by[0]
@@ -36,14 +32,18 @@ def explore_sales_by_category(data, category = 'country_code', sort_by = ['sales
 
     return ret
 
-explore_sales_by_category(
-    data     = df,
-    category = 'member_rating',
-    sort_by  = 'prop_in_group'
-)
-# Function: Explore Sales by Numeric Feature
 
 def explore_sales_by_numeric(data, numeric = ['tag_count'], q = [0.10, 0.50, 0.90]):
+    """Exploring the subscriber data using the column 'made_purchase' and any numeric column
+
+    Args:
+        data (_type_): The subscriber data with a column added 'made_purchase'
+        numeric (str, list, optional): One or more numeric columns. Defaults to ['tag_count'].
+        q (list, optional): The values to apply the quantile function. Defaults to [0.10, 0.50, 0.90].
+
+    Returns:
+        _type_: DataFrame
+    """
     
     if (type(numeric) is list):
         feature_list = ['made_purchase',*numeric]
@@ -55,26 +55,3 @@ def explore_sales_by_numeric(data, numeric = ['tag_count'], q = [0.10, 0.50, 0.9
         .quantile(q = q) 
     
     return ret
-
-explore_sales_by_numeric(
-    data    = df,
-    numeric = ['tag_count','member_rating'],
-    q       = [0.05, 0.25, 0.5, 0.75, 0.95]
-)
-
-#  TEST THEM OUT ---- 
-
-import email_lead_scoring as els
-
-df = els.db_read_els_data()
-els.explore_sales_by_category(
-    data     = df,
-    category = 'member_rating',
-    sort_by  = 'prop_in_group'
-    )
-els.explore_sales_by_numeric(
-    data    = df,
-    numeric = 'tag_count'
-)
-
-
