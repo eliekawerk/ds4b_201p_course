@@ -24,15 +24,29 @@ leads_df = els.db_read_els_data()
 
 # 1.0 FEATURE EXPLORATION ----
 
-# High Colinearity
-
+# High Cardinality
+els.explore_sales_by_category(
+    data     = leads_df,
+    category = "country_code",
+    sort_by  = "sales"
+)\
+    .query("sales > 5")\
+    .count()    
 
 # Ordinal Feature
 
+els.explore_sales_by_category(
+    data     = leads_df,
+    category = "member_rating",
+    sort_by  = "sales"
+)
 
 # Interaction
 
-
+els.explore_sales_by_numeric(
+    data    = leads_df,
+    numeric = ["tag_count","member_rating"]
+)
 
 # 2.0 BUILDING ENGINEERED FEATURES ----
 
