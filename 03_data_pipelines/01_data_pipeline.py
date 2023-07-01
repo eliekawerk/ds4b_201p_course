@@ -52,28 +52,73 @@ els.explore_sales_by_numeric(
 
 # Date Features
 
+date_max = leads_df['optin_time'].max()
 
+date_min = leads_df['optin_time'].min()
+
+time_range = date_min - date_max
+
+time_range.days
+
+leads_df['optin_days'] = (leads_df['optin_time']-date_max).dt.days * -1
 
 # Email Features
 
+leads_df['user_email']
 
+'garrick.langworth@gmail.com'.split("@")[1]
 
-# Activity Features
+leads_df['email_provider'] = leads_df['user_email'].map(lambda x: x.split("@")[1])
 
+# Activity Features (Rate Features)
+
+leads_df['tag_count_by_optin_day'] = leads_df['tag_count']/(leads_df['optin_days'] + 1)
 
 # 3.0 ONE-TO-MANY FEATURES  ----
 # - TAGS: 1 Customer can have many tags
 
 # Specific Tag Features (Actions)
 
+els.db_read_els_table_names()
 
+tags_df = els.db_read_raw_ets_table('Tags')
+
+tags_wide_leads_df = tags_df\
+    .assign(value = lambda x: 1)\
+    .pivot(
+        index   = 'mailchimp_id',
+        columns = 'tag',
+        values  = 'value',
+    )\
+    .fillna(value = 0)\
+    .pipe(
+        func = jn.clean_names
+    )            
 
 # Merge Tags
 
+tags_wide_leads_df.columns = tags_wide_leads_df.columns\
+    .to_series()\
+    .map(lambda x: f"tag_{x}")\
+    .to_list()  
+    
+tags_wide_leads_df = tags_wide_leads_df.reset_index()
 
-
+leads_tags_df = leads_df \
+    .merge(tags_wide_leads_df, how = 'left')  
+        
 # Fill NA selectively
 
+data = leads_tags_df
+
+def fillna_regex(data, regex, value = 0, **kwargs):
+    for col in data.columns:
+        if re.match(pattern = regex, string = col):
+            # print(col)
+            data[col] = data[col].fillna(value = value, **kwargs)
+    return data    
+
+leads_tags_df = fillna_regex(leads_tags_df, regex = "^tag_")
 
 # 4.0 ADJUSTING FEATURES ----
 # - Country Code: Has high cardinality
