@@ -125,13 +125,59 @@ leads_tags_df = fillna_regex(leads_tags_df, regex = "^tag_")
 
 # High Cardinality Features: Country Code
 
+els.explore_sales_by_category(
+    leads_tags_df,
+    category = 'country_code'
+    )\
+    .query("sales >=6 ")\
+    .index \
+    .to_list() 
+    
+countries_to_keep =  [
+'us',
+'in',
+'au',
+'uk',
+'br',
+'ca',
+'de',
+'fr',
+'es',
+'mx',
+'nl',
+'sg',
+'dk',
+'pl',
+'my',
+'ae',
+'co',
+'id',
+'ng',
+'jp',
+'be'
+]             
+
+leads_tags_df['country_code'] = leads_tags_df['country_code']\
+    .apply(lambda x: x if x in countries_to_keep else 'other')
 
 
 # 5.0 EXPLORATORY REPORT PART 2
 
 # Examine with Sweetviz
 
+report = sv.analyze(
+    source         = leads_tags_df,
+    target_feat    = 'made_purchase',
+    feat_cfg       = sv.FeatureConfig(
+        skip     = ['mailchimp_id','user_full_name','user_email',
+                'optin_time'],
+        force_cat = ['member_rating', 'country_code', 'email_provider']
+    )
+)
 
+report.show_html(
+    filepath = '03_data_pipelines/subscriber_report_pipeline.html'
+)
 
 # CONCLUSIONS ----
 
