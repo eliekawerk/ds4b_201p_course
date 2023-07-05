@@ -20,17 +20,13 @@ leads_df = els.db_read_and_process_els_data()
 # - Infers data types (requires user to say yes)
 # - Returns a preprocessing pipeline
 
-clf.setup(
-    
-)
-
 leads_df.info()
 
 # Removing unneccesary columns
 
 df = leads_df\
     .drop(['mailchimp_id', 'user_full_name', 'user_email', 'optin_time','email_provider'],
-          axis =1)
+    axis =1)
 
 
 # Numeric Features
@@ -53,6 +49,44 @@ ordinal_features ={
     'member_rating': ['1', '2', '3', '4', '5']
 }
 
+# Classifier Setup
+
+clf.setup(
+    data                       = df,
+    target                     = 'made_purchase',
+    train_size                 = 0.8,
+    preprocess                 = True,
+    
+    # Imputation
+    imputation_type            = 'simple',
+    
+    # Categorical
+    categorical_features       = categorical_features,
+    handle_unknown_categorical = True,
+    combine_rare_levels        = True,
+    rare_level_threshold       = 0.005,
+    
+    # Ordinal Features
+    ordinal_features           = ordinal_features,
+    
+    # Numeric Features
+    numeric_features           = numeric_features,
+    
+    # K- Fold
+    fold_strategy              = 'stratifiedkfold',
+    fold                       = 5,
+    
+    # Job Experiment Logging
+    n_jobs                     = -1,
+    use_gpu                    = True,
+    session_id                 = 123,
+    log_experiment             = True,
+    experiment_name            = 'email_lead_scoring_0',
+    
+    # Silent: Turns Off
+    silent                     = False
+    
+)
 
 # 2.0 GET CONFIGURATION ----
 # - Understanding what Pycaret is doing underneath
