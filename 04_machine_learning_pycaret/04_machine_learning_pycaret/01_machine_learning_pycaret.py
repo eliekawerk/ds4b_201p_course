@@ -51,7 +51,7 @@ ordinal_features ={
 
 # Classifier Setup
 
-clf.setup(
+clf1 = clf.setup(
     data                       = df,
     target                     = 'made_purchase',
     train_size                 = 0.8,
@@ -83,10 +83,12 @@ clf.setup(
     log_experiment             = True,
     experiment_name            = 'email_lead_scoring_0',
     
-    # Silent: Turns Off
+    # Silent: Turns off asking for data types inferred correctly
     silent                     = False
     
 )
+
+clf1
 
 # 2.0 GET CONFIGURATION ----
 # - Understanding what Pycaret is doing underneath
@@ -96,32 +98,47 @@ clf.setup(
 
 # Transformed Dataset
 
+clf.get_config("data_before_preprocess")
 
+clf.get_config("X")
 
 # Extract Scikit learn Pipeline
 
-
+pipeline = clf.get_config("prep_pipe")
 
 # Check difference in columns
 
-
+pipeline.fit_transform(df)
 
 # 3.0 MACHINE LEARNING (COMPARE MODELS) ----
 
 # Available Models
 
+clf.models()
 
 # Running All Available Models
 
-
+best_models = clf.compare_models(
+    sort        = 'AUC',
+    n_select    = 3,
+    budget_time = 2 
+)
 
 # Get the grid
 
-
+clf.pull()
 
 # Top 3 Models
 
+best_models
 
+len(best_models)
+
+best_models[0]
+
+best_models[1]
+
+best_models[2]
 
 # Make predictions
 
