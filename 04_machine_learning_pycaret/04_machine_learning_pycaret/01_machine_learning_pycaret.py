@@ -142,16 +142,27 @@ best_models[2]
 
 # Make predictions
 
+clf.predict_model(best_models[0])
 
+clf.predict_model(
+    estimator = best_models[0],
+    data      = df.iloc[[0]]
+)
 
 # Refits on Full Dataset
 
-
+best_model_0_finalized = clf.finalize_model(best_models[0])
 
 # Save / load model
 
+os.mkdir('models')
 
+clf.save_model(
+    model      = best_model_0_finalized,
+    model_name = "models/best_model_0"
+)
 
+clf.load_model("models/best_model_0")
 # 4.0 PLOTTING MODEL PERFORMANCE -----
 
 
