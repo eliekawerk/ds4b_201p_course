@@ -2643,3 +2643,37 @@
          verbose=False), verbose=True, kwargs={})
 2023-07-06 08:09:26,816:INFO:Adding model into prep_pipe
 2023-07-06 08:09:26,832:INFO:models/best_model_0.pkl saved in current working directory
+2023-07-06 08:09:26,842:INFO:Pipeline(memory=None,
+         steps=[('dtypes',
+                 DataTypes_Auto_infer(categorical_features=['country_code'],
+                                      display_types=True, features_todrop=[],
+                                      id_columns=[],
+                                      ml_usecase='classification',
+                                      numerical_features=['tag_count',
+                                                          'tag_count_by_optin_day',
+                                                          'tag_aws_webinar',
+                                                          'tag_learning_lab',
+                                                          'tag_learning_lab_05',
+                                                          'tag_learning_lab_09',
+                                                          'tag_learning_lab_11',
+                                                          'tag_learning...
+                                            learning_rate=0.1, loss='deviance',
+                                            max_depth=3, max_features=None,
+                                            max_leaf_nodes=None,
+                                            min_impurity_decrease=0.0,
+                                            min_impurity_split=None,
+                                            min_samples_leaf=1,
+                                            min_samples_split=2,
+                                            min_weight_fraction_leaf=0.0,
+                                            n_estimators=100,
+                                            n_iter_no_change=None,
+                                            presort='deprecated',
+                                            random_state=123, subsample=1.0,
+                                            tol=0.0001, validation_fraction=0.1,
+                                            verbose=0, warm_start=False)]],
+         verbose=False)
+2023-07-06 08:09:26,843:INFO:save_model() successfully completed......................................
+2023-07-06 08:10:05,334:INFO:Initializing load_model()
+2023-07-06 08:10:05,334:INFO:load_model(model_name=models/best_model_0.pkl, platform=None, authentication=None, verbose=True)
+2023-07-06 08:10:20,038:INFO:Initializing load_model()
+2023-07-06 08:10:20,038:INFO:load_model(model_name=models/best_model_0, platform=None, authentication=None, verbose=True)
