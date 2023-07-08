@@ -5447,3 +5447,4 @@
          verbose=False)
 2023-07-07 19:14:43,486:INFO:save_model() successfully completed......................................
 2023-07-07 19:15:17,510:INFO:Initializing load_model()
+2023-07-07 19:15:17,511:INFO:load_model(model_name=models/xgb_model_tuned, platform=None, authentication=None, verbose=True)
