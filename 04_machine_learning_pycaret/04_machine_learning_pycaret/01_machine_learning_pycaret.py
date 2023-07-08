@@ -238,10 +238,11 @@ clf.load_model("models/xgb_model_tuned")
 # 6.0 INTERPRETING MODELS ----
 # - SHAP Package Integration
 
-
+# ?clf.interpret_model
 
 # 1. Summary Plot: Overall top features
 
+clf.interpret_model(best_models[1], plot ='summary')
 
 # 2. Analyze Specific Features ----
 
@@ -254,9 +255,20 @@ els.explore_sales_by_category(
 
 # Correlation Plot
 
+clf.interpret_model(
+    best_models[1],
+    plot    = 'correlation',
+    feature = 'optin_days'
+    )
 
 # Partial Dependence Plot
 
+clf.interpret_model(
+    best_models[1],
+    plot    ='pdp',
+    feature = 'member_rating',
+    ice     = True
+)
 
 # 3. Analyze Individual Observations
 
