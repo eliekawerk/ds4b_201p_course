@@ -163,51 +163,77 @@ clf.save_model(
 )
 
 clf.load_model("models/best_model_0")
+
 # 4.0 PLOTTING MODEL PERFORMANCE -----
-
-
 
 # Get all plots 
 # - Note that this can take a long time for certain plots
 # - May want to just plot individual (see that next)
 
+clf.evaluate_model(best_model_0_finalized)
 
 # - ROC Curves & PR Curves
 
+clf.plot_model(best_model_0_finalized, plot ='auc')
+clf.plot_model(best_model_0_finalized, plot = 'pr')
 
 # Confusion Matrix / Error
 
+clf.plot_model(
+    best_models[1],
+    plot        = 'confusion_matrix',
+    plot_kwargs = {'percent':True}
+    )
 
 # Gain/Lift Plots
 
+clf.plot_model(best_models[1], plot ='gain')
+
+clf.plot_model(best_model_0_finalized, plot = 'lift')
 
 # Feature Importance
 
+clf.plot_model(best_models[1], plot = 'feature')
+clf.plot_model(best_model_0_finalized, plot = 'feature_all')
 
 # Shows the Precision/Recall/F1
 
+clf.plot_model(best_models[1], plot ='class_report')
 
 # Get model parameters used
 
-
-
+clf.plot_model(best_models[1], plot ='parameter')
 
 
 # 5.0 CREATING & TUNING INDIVIDUAL MODELS ----
 
-
+clf.models()
 
 # Create more models
 
-
+xgb_model = clf.create_model(
+    estimator = 'xgboost'
+    )
 
 
 # Tuning Models
 
-
+xgb_model_tuned = clf.tune_model(
+    estimator = xgb_model,
+    n_iter    = 5,
+    optimize  ='AUC'
+)
 
 # Save xgb tuned
 
+xgb_model_tuned_finalized = clf.finalize_model(xgb_model_tuned)
+
+clf.save_model(
+    model      = xgb_model_tuned_finalized,
+    model_name = "models/xgb_model_tuned"
+)
+
+clf.load_model("models/xgb_model_tuned")
 
 # 6.0 INTERPRETING MODELS ----
 # - SHAP Package Integration
