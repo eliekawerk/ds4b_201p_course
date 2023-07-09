@@ -275,21 +275,37 @@ clf.interpret_model(
 
 # Shap Force Plot
 
+leads_df.iloc[[0]]
 
+clf.interpret_model(
+    best_models[1],
+    plot         =  'reason',
+    X_new_sample = leads_df.iloc[[1]]
+)
 
+clf.predict_model(
+    best_models[1],
+    leads_df.iloc[[1]]
+)
 # 7.0 BLENDING MODELS (ENSEMBLES) -----
 
-
+blended_models = clf.blend_models(
+    best_models,
+    optimize ='AUC'
+)
 
 # 8.0 CALIBRATION ----
 # - Improves the probability scoring (makes the probability realistic)
 
+blended_models_calibrated = clf.calibrate_model(blended_models)
 
-
+clf.plot_model(blended_models, plot = 'calibration')
+clf.plot_model(blended_models_calibrated, plot = 'calibration')
 
 # 9.0 FINALIZE MODEL ----
 # - Equivalent of refitting on full dataset
 
+blended_models_final = clf.finalize_model(blended_models_calibrated)
 
 # 10.0 MAKING PREDICTIONS & RANKING LEADS ----
 
@@ -300,7 +316,12 @@ clf.interpret_model(
 
 # SAVING / LOADING PRODUCTION MODELS -----
 
+clf.save_model(
+    model      = blended_models_final,
+    model_name = "models/blended_models_final"
+)
 
+clf.load_model("models/blended_models_final")
 
 # CONCLUSIONS ----
 
