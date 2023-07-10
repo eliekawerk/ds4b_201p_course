@@ -310,8 +310,16 @@ blended_models_final = clf.finalize_model(blended_models_calibrated)
 # 10.0 MAKING PREDICTIONS & RANKING LEADS ----
 
 # Prediction
+predictions_df = clf.predict_model(
+    blended_models_final,
+     data      = leads_df, 
+     raw_score = True
+     )
+
+predictions_df
 
 # Scoring
+
 
 
 # SAVING / LOADING PRODUCTION MODELS -----
@@ -321,7 +329,7 @@ clf.save_model(
     model_name = "models/blended_models_final"
 )
 
-clf.load_model("models/blended_models_final")
+blended_models_final = clf.load_model("models/blended_models_final")
 
 # CONCLUSIONS ----
 
