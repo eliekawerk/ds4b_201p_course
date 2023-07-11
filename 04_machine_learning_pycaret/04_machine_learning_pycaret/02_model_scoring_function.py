@@ -5,6 +5,7 @@
 # ----
 
 import pandas as pd
+import numpy as np
 import pycaret.classification as clf
 import email_lead_scoring as els
 
@@ -20,9 +21,20 @@ def model_score_leads(
     predictions_df = clf.predict_model(
         estimator = mod,
         data      = data,
-        raw_score = True
     )
-    return predictions_df 
+    
+    # FIX -------
+    
+    df = predictions_df 
+    
+    predictions_df['Score'] = np.where(df['Label']==0, 1-df['Score'], df['Score'])
+    
+    leads_scored_df = pd.concat(
+        [predictions_df['Score'], data],
+        axis = 1
+    )
+    
+    return leads_scored_df
 
 model_score_leads(leads_df)
 # TEST OUT
@@ -30,6 +42,7 @@ model_score_leads(leads_df)
 import email_lead_scoring as els
 
 leads_df = els.db_read_and_process_els_data()
+leads_df
 
 els.model_score_leads(
     leads_df,
