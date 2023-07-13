@@ -33,13 +33,28 @@ leads_df = els.db_read_and_process_els_data()
 
 # 1.0 LOADING A PYCARET MODEL
 
+mod_1 = clf.load_model("models/xgb_model_tuned")
 
+mod_1
+
+clf.predict_model(mod_1, data = leads_df, raw_score = True)
 
 # 2.0 WHAT IS A SCIKIT LEARN PIPELINE?
 
+type(mod_1)
 
+mod_1[0]
 
+mod_1.__dict__.keys()
 
+mod_1.__dict__['steps']
+
+len(mod_1)
+
+mod_1[1]
+mod_1[2]
+mod_1[21]
+mod_1[len(mod_1)-1]
 
 # 3.0 HOW TO SETUP A SKLEARN MACHINE LEARNING PIPELINE 
 
