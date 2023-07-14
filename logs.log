@@ -8715,3 +8715,5 @@
                                reg_alpha=0.0005, reg_lambda=0.5, ...)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=True, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
 2023-07-13 18:31:25,938:INFO:Checking exceptions
 2023-07-13 18:31:25,938:INFO:Preloading libraries
+2023-07-14 17:51:02,008:INFO:Initializing load_model()
+2023-07-14 17:51:02,011:INFO:load_model(model_name=models/xgb_model_tuned, platform=None, authentication=None, verbose=True)

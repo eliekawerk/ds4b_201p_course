@@ -60,23 +60,53 @@ mod_1[len(mod_1)-1]
 
 # 3.1 DATA PREPARATION
 
+X = leads_df.drop(
+    ['mailchimp_id','user_full_name','user_email','optin_time','email_provider','made_purchase'], 
+    axis = 1
+)
 
+y = leads_df['made_purchase']
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size    = 0.20,
+    random_state = 123
+)
+
+X_train
+X_test
+
+y_train
+y_test
 
 
 # 3.2 CREATING A SKLEARN PIPELINE ----
 
 # Instantiate an Encoder & Connect to a Column
 
+enc = OneHotEncoder(handle_unknown ='ignore')
 
+transformer = make_column_transformer(
+    (enc,['country_code'])
+)
 
 # Make a Pipeline
 
-
+pipeline_rf = make_pipeline(
+    transformer,
+    RandomForestClassifier()
+)
 
 
 # Fit & Predict with a Pipeline
 
+pipeline_rf.fit(X_train, y_train)
 
+pipeline_rf.predict(X_test)
+
+pipeline_rf.predict_proba(X_test)
 
 
 # Metrics
