@@ -111,19 +111,49 @@ pipeline_rf.predict_proba(X_test)
 
 # Metrics
 
+pipeline_rf.score(X_test, y_test)
 
+SCORERS
 
+SCORERS.keys()
 
+predicted_class_rf = pipeline_rf.predict_proba(X_test)[:,1] > 0.035
+
+roc_auc_score(
+    y_true  = y_test,
+    y_score = predicted_class_rf
+)
+
+confusion_matrix(
+    y_true = y_test,
+    y_pred = predicted_class_rf
+)
 # 4.0 GRIDSEARCH -----
 
 # Grid Search CV 
 
+grid_xgb = GridSearchCV(
+    estimator  = XGBClassifier(),
+    param_grid = {
+        'learning_rate': [0.01, 0.1, 0.2, 0.35, 0.4, 0.6]
+    },
+    cv         = 5,
+    refit      = True,
+    scoring    = 'roc_auc'   
+)
 
+grid_xgb
 
 # Make A Pipeline With GridSearch
 
+pipeline_xgb = make_pipeline(
+    transformer,
+    grid_xgb
+)
 
+pipeline_xgb.fit(X_train, y_train)
 
+pipeline_xgb[1].best_params_
 
 # Metrics
 
