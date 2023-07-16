@@ -180,6 +180,13 @@ roc_auc_score(
     y_score = predicted_class_pycaret
 )
 
+# SAVE & LOADING
+
+import joblib
+
+joblib.dump(pipeline_xgb, "models/pipeline_xgb.pkl")
+
+joblib.load("models/pipeline_xgb.pkl")
 
 # CONCLUSIONS ----
 
