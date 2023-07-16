@@ -135,7 +135,7 @@ confusion_matrix(
 grid_xgb = GridSearchCV(
     estimator  = XGBClassifier(),
     param_grid = {
-        'learning_rate': [0.01, 0.1, 0.2, 0.35, 0.4, 0.6]
+        'learning_rate': [ 0.1, 0.2, 0.35, 0.4, 0.6]
     },
     cv         = 5,
     refit      = True,
@@ -157,12 +157,28 @@ pipeline_xgb[1].best_params_
 
 # Metrics
 
+predicted_class_xgb = pipeline_xgb.predict_proba(X_test)[:,1] > 0.035
 
+roc_auc_score(
+    y_true = y_test,
+    y_score = predicted_class_xgb
+)
 
+confusion_matrix(
+    y_true = y_test,
+    y_pred =predicted_class_xgb
+)
 
 # 5.0 PCYARET COMPARISON ----- 
 
+predicted_class_pycaret = mod_1.predict_proba(
+    leads_df.iloc[X_test.index]
+)[:,1] > 0.70
 
+roc_auc_score(
+    y_true = y_test,
+    y_score = predicted_class_pycaret
+)
 
 
 # CONCLUSIONS ----
