@@ -21,12 +21,15 @@ leads_df = els.db_read_and_process_els_data()
 
 # Initialize H2O
 
-
+h2o.init(
+    max_mem_size = 4
+)
 
 # Convert to H2O Frame
 
+leads_h2o = h2o.H2OFrame(leads_df)
 
-
+leads_h2o.describe()
 
 # Prep for AutoML
 
