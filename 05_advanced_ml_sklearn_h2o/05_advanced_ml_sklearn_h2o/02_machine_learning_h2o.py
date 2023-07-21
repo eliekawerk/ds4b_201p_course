@@ -79,13 +79,39 @@ y_col = 'made_purchase'
 
 # H2OAutoML
 
+aml = H2OAutoML(
+  nfolds           = 5,
+  exclude_algos    = ['DeepLearning'],
+  max_runtime_secs = 3*60,
+  seed             = 123
+)
 
+aml.train(
+  x              = x_cols,
+  y              = y_col,
+  training_frame = leads_h2o
+)
+
+aml.leaderboard
 
 
 # Save / load the model
 
+model_h2o_stacked_ensemble = h2o.get_model(
+  model_id = "StackedEnsemble_BestOfFamily_6_AutoML_1_20230720_201243", 
+)
 
 
+h2o.save_model(
+  model    = model_h2o_stacked_ensemble,
+  path     = "models",
+  filename = "h2o_stacked_ensemble",
+  force    = True
+)
+
+h2o.load_model("models/h2o_stacked_ensemble")
+
+h2o.__version__
 
 # CONCLUSIONS ----
 # 1. H2O AutoML handles A LOT of stuff for you (preprocessing)
