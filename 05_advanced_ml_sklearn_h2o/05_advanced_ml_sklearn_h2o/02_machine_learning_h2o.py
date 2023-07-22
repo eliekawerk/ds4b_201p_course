@@ -109,9 +109,16 @@ h2o.save_model(
   force    = True
 )
 
-h2o.load_model("models/h2o_stacked_ensemble")
+model_h2o_stacked_ensemble = h2o.load_model("models/h2o_stacked_ensemble")
 
 h2o.__version__
+
+prediction_h2o = model_h2o_stacked_ensemble.predict(leads_h2o)
+
+predictions_df = prediction_h2o.as_data_frame()
+
+pd.concat([predictions_df, leads_df], axis = 1 )\
+  .sort_values('p1', ascending = False)
 
 # CONCLUSIONS ----
 # 1. H2O AutoML handles A LOT of stuff for you (preprocessing)
