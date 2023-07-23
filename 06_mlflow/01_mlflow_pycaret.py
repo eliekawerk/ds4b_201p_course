@@ -45,15 +45,29 @@ leads_tags_df = els.db_read_and_process_els_data()
 
 # 3.1 TRACKING URI (FOLDER WHERE YOUR EXPERIMENTS & RUNS ARE STORED) ----
 
-
+mlflow.get_tracking_uri()
 
 # 3.2 WORKING WITH EXPERIMENTS (GROUP OF RUNS) ----
 
 # Listing Experiments
 
+mlflow.list_experiments()
+
+mlflow.get_experiment("1")
+
+mlflow.get_experiment_by_name("email_lead_scoring_0")
 
 # Programmatically Working With Experiments
 
+mlflow_experiments = mlflow.list_experiments()
+
+experiment_1 = mlflow_experiments[1]
+
+experiment_1.experiment_id
+experiment_1.artifact_location
+experiment_1.name
+experiment_1.tags
+experiment_1.lifecycle_stage
 
 # 3.3 SEARCHING WITH THE EXPERIMENT NAME ----
 
