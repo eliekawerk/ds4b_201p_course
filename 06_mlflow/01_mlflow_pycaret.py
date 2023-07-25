@@ -71,22 +71,34 @@ experiment_1.lifecycle_stage
 
 # 3.3 SEARCHING WITH THE EXPERIMENT NAME ----
 
+logs_df = mlflow.search_runs(
+    experiment_ids =  experiment_1.experiment_id
+    )
 
+best_run_id = logs_df\
+    .query("`tags.Source` in ['finalize_model']")\
+    .sort_values('metrics.AUC', ascending = False)\
+    ['run_id']\
+    .values\
+    [0]            
 
 # pycaret interface to get experiments
 
 
-
+clf.get_logs(experiment_name = 'email_lead_scoring_0')
 
 
 # 4.0 WORKING WITH RUNS ----
 
 # Finding Runs in Experiments
 
+best_run_id
+
+mlflow.list_run_infos("1")[0]
 
 # Finding Runs from Run ID
 
-
+best_run_details = mlflow.get_run('9e2a699a82f64223b7c1ca1b4aa52709')
 
 # 5.0 MAKING PREDICTIONS ----
 
