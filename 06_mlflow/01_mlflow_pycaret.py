@@ -104,19 +104,36 @@ best_run_details = mlflow.get_run('9e2a699a82f64223b7c1ca1b4aa52709')
 
 # Using the mlflow model 
 
+import mlflow
+logged_model = 'runs:/9e2a699a82f64223b7c1ca1b4aa52709/model'
 
+# Load model as a PyFuncModel.
+loaded_model = mlflow.pyfunc.load_model(logged_model)
+
+# Predict on a Pandas DataFrame.
+import pandas as pd
+loaded_model.predict(leads_tags_df)
 
 # Issue - Mlflow does not give probability. We need probabilities for lead scoring.
 
 # Solution 1 - Extract out the sklearn model and use the 
 #   sklearn .predict_proba() method
 
+loaded_model._model_impl
 
+loaded_model._model_impl.predict_proba(leads_tags_df)[:,1]
 
 # Solution 2 - Predict with Pycaret's prediction function in production
 
+clf.predict_model(
+    estimator = loaded_model._model_impl,
+    data      = leads_tags_df,
+    raw_score = True
+)
 
-
+clf.load_model(
+    model_name =f'mlruns/1/{best_run_id}/artifacts/model/model'
+)
 
 # CONCLUSIONS ----
 # 1. Pycaret simplifies the logging process for mlflow
