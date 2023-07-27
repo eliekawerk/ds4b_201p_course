@@ -49,31 +49,77 @@ y_col = 'made_purchase'
 
 # Create an mlflow client
 
+EXPERIMENT_NAME = 'automl_lead_scoring_1'
+
+client = mlflow.MlflowClient()
+
+
 # Create an mlflow experiment (if not already present)
+try:
+    experiment_id = mlflow.create_experiment(EXPERIMENT_NAME)
+except:
+    print(f"Experiment Name: {EXPERIMENT_NAME} already exists.")
+    
+experiment = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
 
+experiment
 
+experiment.experiment_id
+
+mlflow.set_experiment(experiment_name = experiment.name)
+    
 # 2.0 MLFLOW UI
 # !mlflow ui
-
-
 
 # 3.0 MLFLOW + H2O AUTOML INTEGRATION ----
 
 # Start an mlflow run (an experiment must be created):
 
+mlflow.start_run() 
     
 # Run H2O AutoML
 
+aml = H2OAutoML(
+    max_runtime_secs = 45,
+    exclude_algos    = ['DeepLearning'],
+    nfolds           = 5,
+    seed             = 123
+)
 
+aml.train(
+    x              = x_cols,
+    y              = y_col,
+    training_frame = leads_h2o
+)
+
+aml.leaderboard
 
 # Mlflow H2O Integration: Used mlflow_h2o.log_model()
+
+
+mlflow_h2o.log_model(
+    h2o_model     = aml.leader,
+    artifact_path = "model"
+)
 
 # Scikit Learn Integration: Use mlflow_sklearn.log_model()
 
 
 # Log Metrics
 
+aml.leader.logloss()
+aml.leader.auc()
 
+mlflow.log_metric("log_loss", aml.leader.logloss())
+mlflow.log_metric("auc", aml.leader.auc())
+
+# Set a tag
+
+mlflow.set_tag("Source", "h2o_automl_model")
+
+active_run_id = mlflow.active_run().info.run_id
+
+mlflow.set_tag("Run ID", active_run_id)
 # Print Model URI (location)
 
 
