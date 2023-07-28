@@ -121,19 +121,45 @@ active_run_id = mlflow.active_run().info.run_id
 
 mlflow.set_tag("Run ID", active_run_id)
 # Print Model URI (location)
-
+model_uri = mlflow.get_artifact_uri("model")
+print(model_uri)
 
 # Print and view AutoML Leaderboard
 
+lb = h2o.automl.get_leaderboard(aml, extra_columns = "ALL")
+print(lb.head(rows = lb.nrows))
 
 # Save leaderboard as CSV Artifact
 
+experiment_id = experiment.experiment_id
+run_id = mlflow.active_run().info.run_id
+try:
+    lb_path = f"mlruns/{experiment_id}/{run_id}/artifacts/model/leaderboard.csv"
+    lb.as_data_frame().to_csv(lb_path, index = False)
+    print(f'Leaderboard saved in location: {lb_path}')
+except:
+    print("Could not save leaderboard as a CSV file.")    
+
+
+# END THE MLFLOW RUN
+
+mlflow.end_run()
 
 
 # PREDICTIONS ---- 
 # - Copy from MLFlow UI Artifacts 
 
+import mlflow
+logged_model = 'runs:/7b963a002fd743c79aa299fb62d699e9/model'
 
+# Load model as a PyFuncModel.
+loaded_model = mlflow.pyfunc.load_model(logged_model)
+
+# Predict on a Pandas DataFrame.
+import pandas as pd
+loaded_model.predict(pd.DataFrame(leads_df))['p1']
+
+loaded_model._model_impl
 
 # CONCLUSIONS ----
 # 1. We have learned a framework for creating our own MLFlow Experiments, Runs, and storing models like H2O and Scikit Learn
