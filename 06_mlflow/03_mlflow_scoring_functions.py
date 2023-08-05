@@ -44,7 +44,7 @@ def mlflow_get_best_run(
     logs_df = mlflow.search_runs(experiment_id)
 
     best_run_id = logs_df.query("`tags.Source` in ['finalize_model','h2o_automl_model']")\
-    .sort_values('metrics.auc', ascending = False)\
+    .sort_values('metrics.AUC', ascending = False)\
     ['run_id']\
     .values[0]
     
@@ -63,19 +63,17 @@ import h2o
 h2o.init()
 run_id = mlflow_get_best_run('automl_lead_scoring_1')
 
-#logged_model = f'runs:/{run_id}/model'
-
-logged_model = f'C:/Users/daver/OneDrive/DESKTOP/DS4B_201P/ds4b_201p_course/mlruns/2/{run_id}/artifacts/model'
+logged_model = f'runs:/{run_id}/model'
 
 loaded_model = mlflow.pyfunc.load_model(logged_model)
 loaded_model.predict(leads_df)['p1']
 
 # Sklearn / Pycaret (Extract)
 run_id = mlflow_get_best_run('email_lead_scoring_0')
-#logged_model = f'runs:/{run_id}/model'
-loaded_model = mlflow.pyfunc.load_model(logged_model)
+logged_model = f'runs:/{run_id}/model'
 
-loaded_model._model_impl.predict_proba(leads_tags_df)[:,1]
+loaded_model = mlflow.pyfunc.load_model(logged_model)
+loaded_model._model_impl.predict_proba(leads_df)[:,1]
 # Function
 
 

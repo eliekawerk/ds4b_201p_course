@@ -150,7 +150,9 @@ mlflow.end_run()
 # - Copy from MLFlow UI Artifacts 
 
 import mlflow
-logged_model = 'runs:/7b963a002fd743c79aa299fb62d699e9/model'
+logged_model = 'runs:/8c6b5f6c2ac9473b807e38b01ec13f78/model'
+
+
 
 # Load model as a PyFuncModel.
 loaded_model = mlflow.pyfunc.load_model(logged_model)
