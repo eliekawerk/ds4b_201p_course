@@ -76,8 +76,59 @@ loaded_model = mlflow.pyfunc.load_model(logged_model)
 loaded_model._model_impl.predict_proba(leads_df)[:,1]
 # Function
 
+data= leads_df
+
+def mlflow_score_leads(data, run_id):
+    logged_model = f'runs:/{run_id}/model'
+    
+    print(logged_model)
+
+    loaded_model = loaded_model = mlflow.pyfunc.load_model(logged_model)
+
+    # Predict
+    try:
+        predictions_array = loaded_model.predict(pd.DataFrame(data))['p1']
+
+    except:
+        predictions_array = loaded_model._model_impl.predict_proba(data)[:,1]    
+
+
+
+    predictions_series = pd.Series(predictions_array, name = "Score")
+
+    ret = pd.concat([predictions_series, data], axis = 1 )
+
+    return ret
+
+
+mlflow_score_leads(data   = leads_df, 
+                   run_id = mlflow_get_best_run('automl_lead_scoring_1')
+                   )
+
+
+mlflow_score_leads(data   = leads_df, 
+                   run_id = mlflow_get_best_run('email_lead_scoring_0')
+                   )
+
 
 
 # 3.0 TEST WORKFLOW ----
 
+import email_lead_scoring as els
 
+leads_df = els.db_read_and_process_els_data()
+
+best_run_id = els.mlflow_get_best_run('email_lead_scoring_0')
+
+els.mlflow_score_leads(
+    data   = leads_df,
+    run_id = best_run_id
+)
+
+
+best_run_id = els.mlflow_get_best_run('automl_lead_scoring_1')
+
+els.mlflow_score_leads(
+    data   = leads_df,
+    run_id = best_run_id
+)
