@@ -111,7 +111,7 @@ aml.leader.logloss()
 aml.leader.auc()
 
 mlflow.log_metric("log_loss", aml.leader.logloss())
-mlflow.log_metric("auc", aml.leader.auc())
+mlflow.log_metric("AUC", aml.leader.auc())
 
 # Set a tag
 

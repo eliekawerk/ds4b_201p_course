@@ -1,7 +1,0 @@
-mlflow
-cffi==1.15.1
-defusedxml==0.7.1
-h2o==3.40.0.1
-matplotlib==3.5.3
-pandas==1.1.5
-wcwidth==0.2.6

@@ -56,16 +56,14 @@ mlflow_get_best_run('email_lead_scoring_0')
 
 # 2.0 PREDICT WITH THE MODEL (LEAD SCORING FUNCTION)
 
-run_id = mlflow_get_best_run('automl_lead_scoring_1')
-run_id
-
 # Load model as a PyFuncModel.
 
 # H2O
 import h2o
 h2o.init()
+run_id = mlflow_get_best_run('automl_lead_scoring_1')
 
-logged_model = f'runs:/{run_id}/model'
+#logged_model = f'runs:/{run_id}/model'
 
 logged_model = f'C:/Users/daver/OneDrive/DESKTOP/DS4B_201P/ds4b_201p_course/mlruns/2/{run_id}/artifacts/model'
 
@@ -73,7 +71,11 @@ loaded_model = mlflow.pyfunc.load_model(logged_model)
 loaded_model.predict(leads_df)['p1']
 
 # Sklearn / Pycaret (Extract)
+run_id = mlflow_get_best_run('email_lead_scoring_0')
+#logged_model = f'runs:/{run_id}/model'
+loaded_model = mlflow.pyfunc.load_model(logged_model)
 
+loaded_model._model_impl.predict_proba(leads_tags_df)[:,1]
 # Function
 
 
