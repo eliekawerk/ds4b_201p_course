@@ -10404,3 +10404,17 @@
                                                        weights=None),
                        cv=5, method='sigmoid')
 2023-08-05 10:43:27,586:INFO:finalize_model() succesfully completed......................................
+2023-08-06 08:51:46,314:INFO:Initializing load_model()
+2023-08-06 08:51:46,315:INFO:load_model(model_name=challenge_02/model_pcaret/xgb_model_tuned.pkl, platform=None, authentication=None, verbose=True)
+2023-08-06 08:51:57,787:INFO:Initializing load_model()
+2023-08-06 08:51:57,788:INFO:load_model(model_name=challenge_02/model_pcaret/xgb_model_tuned, platform=None, authentication=None, verbose=True)
+2023-08-06 08:52:37,779:INFO:Initializing load_model()
+2023-08-06 08:52:37,780:INFO:load_model(model_name=challenge_02/model_pycaret/xgb_model_tuned, platform=None, authentication=None, verbose=True)
+2023-08-06 08:53:42,379:INFO:Initializing load_model()
+2023-08-06 08:53:42,380:INFO:load_model(model_name=challenge_02/model_pycaret/xgb_model_tuned, platform=None, authentication=None, verbose=True)
+2023-08-06 08:53:50,361:INFO:Initializing load_model()
+2023-08-06 08:53:50,362:INFO:load_model(model_name=challenge_02/model_pycaret/xgb_model_tuned, platform=None, authentication=None, verbose=True)
+2023-08-06 08:53:57,994:INFO:Initializing load_model()
+2023-08-06 08:53:57,994:INFO:load_model(model_name=challenge_02/model_pycaret/xgb_model_tuned, platform=None, authentication=None, verbose=True)
+2023-08-06 08:54:07,657:INFO:Initializing load_model()
+2023-08-06 08:54:07,657:INFO:load_model(model_name=challenge_02/model_pycaret/xgb_model_tuned, platform=None, authentication=None, verbose=True)
