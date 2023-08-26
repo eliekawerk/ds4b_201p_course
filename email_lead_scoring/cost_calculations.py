@@ -39,11 +39,11 @@ def cost_calc_monthly_cost_table(
     
     # Lost Customers - No Growth
     
-    cost_table_df['lost_customers_no_growth'] = cost_table_df['email_size_no_growth'] * unsub_rate_per_sales_email * sales_emails_per_month
+    cost_table_df['lost_customers_no_growth'] = cost_table_df['email_size_no_growth'] * unsub_rate_per_sales_email * sales_emails_per_month *   customer_conversion_rate
     
     # Lost Revenue - No Growth
     
-    cost_table_df['cost_no_growth'] = cost_table_df['lost_customers_no_growth'] * customer_conversion_rate * average_customer_value
+    cost_table_df['cost_no_growth'] = cost_table_df['lost_customers_no_growth'] * average_customer_value
     
     # Email Size - With Growth
     
@@ -51,11 +51,11 @@ def cost_calc_monthly_cost_table(
     
     # Lost Customers - With Growth
     
-    cost_table_df['lost_customers_with_growth'] = cost_table_df['email_size_with_growth'] * unsub_rate_per_sales_email * sales_emails_per_month     
+    cost_table_df['lost_customers_with_growth'] = cost_table_df['email_size_with_growth'] * unsub_rate_per_sales_email * sales_emails_per_month * customer_conversion_rate    
     
     # Cost - With Growth
     
-    cost_table_df['cost_with_growth'] = cost_table_df['lost_customers_with_growth'] *  customer_conversion_rate * average_customer_value
+    cost_table_df['cost_with_growth'] = cost_table_df['lost_customers_with_growth']  * average_customer_value
 
     
     return cost_table_df
