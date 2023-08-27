@@ -35,11 +35,42 @@ els.cost_simulate_unsub_costs()
 
 # 1.1 Make Lead Strategy
 
+leads_scored_small_df =leads_scored_df[['user_email', 'Score', 'made_purchase']]
 
+leads_ranked_df = leads_scored_small_df\
+    .sort_values('Score', ascending = False)\
+    .assign(rank = lambda x: np.arange(0, len(x['made_purchase'])) + 1)\
+    .assign(gain = lambda x: np.cumsum(x['made_purchase'])/ np.sum(x['made_purchase']))
+
+leads_ranked_df
+
+# Threshold Selection
+
+thresh = 0.95
+
+strategy_df = leads_ranked_df \
+    .assign(category = lambda x: np.where(x['gain'] <= thresh, "Hot-Lead", "Cold-Lead"))
+
+strategy_for_marketing_df = leads_scored_df \
+    .merge(
+        right       = strategy_df[['category']],
+        how         = 'left',
+        left_index  = True,
+        right_index = True
+    )
+
+strategy_for_marketing_df
 
 # 1.2 Aggregate Results
 
+results_df = strategy_df\
+.groupby('category')\
+.agg(
+    count             = ('made_purchase', 'count'),
+    sum_made_purchase = ('made_purchase', 'sum')
+)
 
+results_df
 
 # 2.0 CONFUSION MATRIX ANALYSIS ----
 
