@@ -88,27 +88,67 @@ sample_factor = 5
 
 # 2.1 Confusion Matrix Calculations ----
 
+results_df
+
+try:
+    cold_lead_count = results_df['count']['Cold-Lead']
+except:
+    cold_lead_count = 0
+
+
+try:
+    hot_lead_count = results_df['count']['Hot-Lead']
+except:
+    hot_lead_count = 0  
+
+
+try:
+    missed_purchases = results_df['sum_made_purchase']['Cold-Lead']
+except:
+    missed_purchases = 0   
+
+try:
+    made_purchases = results_df['sum_made_purchase']['Hot-Lead']
+except:
+    made_purcahases = 0         
+
+
 
 # 2.2 Confusion Matrix Summaries ----
 
+total_count = (cold_lead_count + hot_lead_count)
+
+total_purchases = (missed_purchases + made_purchases)
+
+sample_factor  = email_list_size / total_count
+
+sales_per_email_sent = avg_sales_per_month / avg_sales_emails_per_month
 
 # 3.0 PRELIMINARY EXPECTED VALUE CALCULATIONS
 
 # 3.1 [Savings] Cold That Are Not Targeted
 
-
+savings_cold_no_target = cold_lead_count * sales_emails_per_month * unsub_rate_per_sales_email \
+    * customer_conversion_rate * avg_customer_value * sample_factor
 
 # 3.2 [Cost] Missed Sales That Are Not Targeted
 
+missed_purchase_ratio = missed_purchases / (missed_purchases + made_purchases)
 
+cost_missed_purchases = sales_per_email_sent * sales_emails_per_month * missed_purchase_ratio
 
 # 3.3 [Cost] Hot Leads Targeted That Unsubscribe
 
-    
+cost_hot_target_but_unsub = hot_lead_count * sales_emails_per_month * unsub_rate_per_sales_email * \
+    customer_conversion_rate * avg_customer_value * sample_factor
     
 # 3.4 [Savings] Sales Achieved
 
+made_purchase_ratio = made_purchases / (missed_purchases + made_purchases)
 
+savinigs_made_purchases = sales_per_email_sent * sales_emails_per_month * made_purchase_ratio
+
+savinigs_made_purchases
 
 # 4.0 FINAL EXPECTED VALUE TO REPORT TO MANAGEMENT
 
