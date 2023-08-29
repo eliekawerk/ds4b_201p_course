@@ -146,28 +146,34 @@ cost_hot_target_but_unsub = hot_lead_count * sales_emails_per_month * unsub_rate
 
 made_purchase_ratio = made_purchases / (missed_purchases + made_purchases)
 
-savinigs_made_purchases = sales_per_email_sent * sales_emails_per_month * made_purchase_ratio
+savings_made_purchases = sales_per_email_sent * sales_emails_per_month * made_purchase_ratio
 
-savinigs_made_purchases
+savings_made_purchases
 
 # 4.0 FINAL EXPECTED VALUE TO REPORT TO MANAGEMENT
 
 # 4.1 Expected Monthly Sales (Realized)
 
+savings_made_purchases
 
 # 4.2 Expected Monthly Value (Unrealized because of delayed nuture effect)
 
+ev = savings_made_purchases + savings_cold_no_target - cost_missed_purchases
 
 # 4.3 Expected Monthly Savings (Unrealized until nurture takes effect)
 
+es = savings_cold_no_target - cost_missed_purchases
 
 # 4.4 Expected Saved Customers (Unrealized until nuture takes effect)
 
+esc = savings_cold_no_target / avg_customer_value
 
 # 4.5 EXPECTED VALUE SUMMARY OUTPUT
 
-
-
+print(f"Expected Value: {'${:,.0f}'.format(ev)}")
+print(f"Expected Savings: {'${:,.0f}'.format(es)}")
+print(f"Monthly Sales: {'${:,.0f}'.format(savings_made_purchases)}")
+print(f"Saved Customers: {'{:,.0f}'.format(esc)}")
 
 
 # CONCLUSIONS -----
