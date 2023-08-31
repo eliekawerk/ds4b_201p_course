@@ -21,10 +21,41 @@ leads_scored_df = els.model_score_leads(leads_df)
 # 1.0 MAKE THE LEAD STRATEGY FROM THE SCORED SUBSCRIBERS:
 #   lead_make_strategy()
 
+def lead_make_strategy(leads_scored_ef, thresh = 0.99, for_marketing_team = False, verbose = False):
+    
+    # Ranking the leads
+    leads_scored_small_df = leads_scored_df[['user_email', 'Score', 'made_purchase']]
+
+    leads_ranked_df = leads_scored_small_df\
+    .sort_values('Score', ascending = False)\
+    .assign(rank = lambda x: np.arange(0, len(x['made_purchase'])) + 1)\
+    .assign(gain = lambda x: np.cumsum(x['made_purchase'])/ np.sum(x['made_purchase']))
+
+    # Make the Strategy
+    strategy_df = leads_ranked_df \
+        .assign(category = lambda x: np.where(x['gain'] <= thresh, "Hot-Lead", "Cold-Lead"))
+
+    if for_marketing_team:
+        strategy_for_marketing_df = leads_scored_df \
+            .merge(
+                right       = strategy_df[['category']],
+                how         = 'left',
+                left_index  = True,
+                right_index = True
+            )
+    if verbose:
+        print("Strategy created")
+
+
+    return strategy_df
 
 # Workflow
 
-
+lead_make_strategy(
+    leads_scored_df,
+    thresh             = 0.90,
+    for_marketing_team = False
+)
 
 # 2.0 AGGREGATE THE LEAD STRATEGY RESULTS
 #  lead_aggregate_strategy_results()
