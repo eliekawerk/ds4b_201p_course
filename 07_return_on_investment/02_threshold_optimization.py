@@ -60,19 +60,150 @@ lead_make_strategy(
 # 2.0 AGGREGATE THE LEAD STRATEGY RESULTS
 #  lead_aggregate_strategy_results()
 
+def lead_aggregate_strategy_results(strategy_df):
+    results_df = strategy_df\
+    .groupby('category')\
+    .agg(
+        count             = ('made_purchase', 'count'),
+        sum_made_purchase = ('made_purchase', 'sum')
+    )
+
+    return results_df
+
 
 # Workflow
+
+lead_make_strategy(leads_scored_df, thresh = 0.90) \
+    .pipe(lead_aggregate_strategy_results)
 
 
     
 # 3.0 CALCULATE EXPECTED VALUE (FOR ONE SET OF INPUTS) ----
 #  lead_strategy_calc_expected_value()
 
+def lead_strategy_calc_expected_value(
+        results_df,
+        email_list_size            = 1e5,
+        unsub_rate_per_sales_email = 0.001,
+        sales_emails_per_month     = 5,
 
+        avg_sales_per_month        = 250000,
+        avg_sales_emails_per_month = 5,
+
+        customer_conversion_rate   = 0.05,
+        avg_customer_value         = 2000,
+        verbose                    = False
+):
+    
+
+    # Confusion Matrix Calculations
+    try:
+        cold_lead_count = results_df['count']['Cold-Lead']
+    except:
+        cold_lead_count = 0
+
+
+    try:
+        hot_lead_count = results_df['count']['Hot-Lead']
+    except:
+        hot_lead_count = 0  
+
+
+    try:
+        missed_purchases = results_df['sum_made_purchase']['Cold-Lead']
+    except:
+        missed_purchases = 0   
+
+    try:
+        made_purchases = results_df['sum_made_purchase']['Hot-Lead']
+    except:
+        made_purcahases = 0 
+
+
+    # Confusion Matrix Summaries
+    total_count = (cold_lead_count + hot_lead_count)
+
+    total_purchases = (missed_purchases + made_purchases)
+
+    sample_factor  = email_list_size / total_count
+
+    sales_per_email_sent = avg_sales_per_month / avg_sales_emails_per_month
+    
+
+    # Preliminary Expected Value Calculations
+
+    # 3.1 [Savings] Cold That Are Not Targeted
+
+    savings_cold_no_target = cold_lead_count * sales_emails_per_month * unsub_rate_per_sales_email \
+        * customer_conversion_rate * avg_customer_value * sample_factor
+
+    # 3.2 [Cost] Missed Sales That Are Not Targeted
+
+    missed_purchase_ratio = missed_purchases / (missed_purchases + made_purchases)
+
+    cost_missed_purchases = sales_per_email_sent * sales_emails_per_month * missed_purchase_ratio
+
+
+    # 3.3 [Cost] Hot Leads Targeted That Unsubscribe
+
+    cost_hot_target_but_unsub = hot_lead_count * sales_emails_per_month * unsub_rate_per_sales_email * \
+        customer_conversion_rate * avg_customer_value * sample_factor
+    
+    # 3.4 [Savings] Sales Achieved
+
+    made_purchase_ratio = made_purchases / (missed_purchases + made_purchases)
+
+    savings_made_purchases = sales_per_email_sent * sales_emails_per_month * made_purchase_ratio
+
+
+    # 4.2 Expected Monthly Value (Unrealized because of delayed nuture effect)
+
+    ev = savings_made_purchases + savings_cold_no_target - cost_missed_purchases
+
+    # 4.3 Expected Monthly Savings (Unrealized until nurture takes effect)
+
+    es = savings_cold_no_target - cost_missed_purchases
+
+    # 4.4 Expected Saved Customers (Unrealized until nuture takes effect)
+
+    esc = savings_cold_no_target / avg_customer_value
+
+    if verbose:
+        print(f"Expected Value: {'${:,.0f}'.format(ev)}")
+        print(f"Expected Savings: {'${:,.0f}'.format(es)}")
+        print(f"Monthly Sales: {'${:,.0f}'.format(savings_made_purchases)}")
+        print(f"Saved Customers: {'{:,.0f}'.format(esc)}")
+
+    return(
+        {
+            'expected value': ev,
+            'expected savings': es,
+            'monthly savings': savings_made_purchases,
+            'expected customers saved': esc
+        }
+    )    
 
 # Workflow:
 
+lead_make_strategy(
+    leads_scored_df,
+    thresh  = 0.95,
+    verbose = True
+)\
+    .pipe(lead_aggregate_strategy_results)\
+    .pipe(
+        lead_strategy_calc_expected_value,
+        email_list_size            = 2e5,
+        unsub_rate_per_sales_email = 0.001,
+        sales_emails_per_month     = 5,
 
+        avg_sales_per_month        = 250000,
+        avg_sales_emails_per_month = 5,
+
+        customer_conversion_rate   = 0.05,
+        avg_customer_value         = 2000,
+        verbose                    = True
+        )
 
 # 4.0 OPTIMIZE THE THRESHOLD AND GENERATE A TABLE
 #  lead_strategy_create_thresh_table()
