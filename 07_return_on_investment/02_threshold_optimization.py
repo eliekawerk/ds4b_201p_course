@@ -21,7 +21,7 @@ leads_scored_df = els.model_score_leads(leads_df)
 # 1.0 MAKE THE LEAD STRATEGY FROM THE SCORED SUBSCRIBERS:
 #   lead_make_strategy()
 
-def lead_make_strategy(leads_scored_ef, thresh = 0.99, for_marketing_team = False, verbose = False):
+def lead_make_strategy(leads_scored_df, thresh = 0.99, for_marketing_team = False, verbose = False):
     
     # Ranking the leads
     leads_scored_small_df = leads_scored_df[['user_email', 'Score', 'made_purchase']]
@@ -117,7 +117,7 @@ def lead_strategy_calc_expected_value(
     try:
         made_purchases = results_df['sum_made_purchase']['Hot-Lead']
     except:
-        made_purcahases = 0 
+        made_purchases = 0 
 
 
     # Confusion Matrix Summaries
@@ -202,14 +202,61 @@ lead_make_strategy(
 
         customer_conversion_rate   = 0.05,
         avg_customer_value         = 2000,
-        verbose                    = True
+        verbose                    = False
         )
 
 # 4.0 OPTIMIZE THE THRESHOLD AND GENERATE A TABLE
 #  lead_strategy_create_thresh_table()
 
+def lead_strategy_create_thresh_table(
+  leads_scored_df,
+  thresh                     = np.linspace(0, 1, num = 100),
+  email_list_size            = 2e5,
+  unsub_rate_per_sales_email = 0.001,
+  sales_emails_per_month     = 5,
+  avg_sales_per_month        = 250000,
+  avg_sales_emails_per_month = 5,
+  customer_conversion_rate   = 0.05,
+  avg_customer_value         = 2000,
+  highlight_max              = True,
+  highlight_max_color        = "yellow",
+  verbose                    = True
+):
 
+    thresh_df = pd.Series(thresh, name = "thresh").to_frame()
+    # List Comprehension
+    #[tup[0] for tup in zip(thresh_df['thresh'])]
+    sim_results_list = [
+      lead_make_strategy(
+        leads_scored_df,
+        thresh  = tup[0],
+        verbose = verbose
+        )\
+            .pipe(
+        lead_aggregate_strategy_results
+        )\
+            .pipe(
+            lead_strategy_calc_expected_value,
+            email_list_size            = email_list_size,
+            unsub_rate_per_sales_email = unsub_rate_per_sales_email,
+            sales_emails_per_month     = sales_emails_per_month,
 
+            avg_sales_per_month        = avg_sales_per_month,
+            avg_sales_emails_per_month = avg_sales_emails_per_month,
+
+            customer_conversion_rate   = customer_conversion_rate,
+            avg_customer_value         = avg_customer_value,
+            verbose                    = verbose
+            )
+        
+        for tup in zip(thresh_df['thresh'])
+    ]
+
+    sim_results_df = pd.Series(sim_results_list, name= "sim_results").to_frame()       
+
+    sim_results_df = sim_results_df['sim_results'].apply(pd.Series)
+
+    thresh_optim_df = pd.concat([thresh_df, sim_results_df], axis = 1)
 # Workflow:
 
 
