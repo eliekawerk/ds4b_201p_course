@@ -212,7 +212,7 @@ def lead_strategy_create_thresh_table(
   leads_scored_df,
   thresh                     = np.linspace(0, 1, num = 100),
   email_list_size            = 2e5,
-  unsub_rate_per_sales_email = 0.001,
+  unsub_rate_per_sales_email = 0.005,
   sales_emails_per_month     = 5,
   avg_sales_per_month        = 250000,
   avg_sales_emails_per_month = 5,
@@ -257,9 +257,22 @@ def lead_strategy_create_thresh_table(
     sim_results_df = sim_results_df['sim_results'].apply(pd.Series)
 
     thresh_optim_df = pd.concat([thresh_df, sim_results_df], axis = 1)
+
+    if highlight_max:
+        thresh_optim_df = thresh_optim_df.style.highlight_max(
+            axis  = 0,
+            color = highlight_max_color
+            )
+
+    return thresh_optim_df
 # Workflow:
 
-
+lead_strategy_create_thresh_table(
+    leads_scored_df,
+    thresh              = np.linspace(0, 1, num = 200),
+    highlight_max_color = "green",
+    verbose             = True
+)
 
 # 5.0 SELECT THE BEST THRESHOLD
 #  def lead_select_optimum_thresh()
