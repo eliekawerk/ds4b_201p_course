@@ -176,10 +176,10 @@ def lead_strategy_calc_expected_value(
 
     return(
         {
-            'expected value': ev,
-            'expected savings': es,
-            'monthly savings': savings_made_purchases,
-            'expected customers saved': esc
+            'expected_value': ev,
+            'expected_savings': es,
+            'monthly_sales': savings_made_purchases,
+            'expected_customers_saved': esc
         }
     )    
 
@@ -267,9 +267,9 @@ def lead_strategy_create_thresh_table(
     return thresh_optim_df
 # Workflow:
 
-lead_strategy_create_thresh_table(
+thresh_optim_df = lead_strategy_create_thresh_table(
     leads_scored_df,
-    thresh              = np.linspace(0, 1, num = 200),
+    thresh              = np.linspace(0, 1, num = 100),
     highlight_max_color = "green",
     verbose             = True
 )
@@ -277,11 +277,56 @@ lead_strategy_create_thresh_table(
 # 5.0 SELECT THE BEST THRESHOLD
 #  def lead_select_optimum_thresh()
 
+def lead_select_optimum_thresh(
+        thresh_optim_df,
+        optim_col                         = "expected_value",
+        monthly_sales_reduction_safeguard = 0.90,
+        verbose                           = False
+        ):
 
+        # Handle styler object
+        try:
+            thresh_optim_df = thresh_optim_df.data
+        except:
+            thresh_optim_df = thresh_optim_df    
+
+        # Find optim
+        _filter_1 = thresh_optim_df[optim_col] == thresh_optim_df[optim_col].max()
+
+        # Find safeguard
+        _filter_2 = thresh_optim_df['monthly_sales'] >= monthly_sales_reduction_safeguard * thresh_optim_df['monthly_sales'].max()
+
+
+        # Test 1 optim is in the safeguard
+        if (all(_filter_1 + _filter_2 == _filter_2)):
+            _filter_ = _filter_1
+        else:
+            _filter_ = _filter_2
+
+        # Appply filter
+        thresh_selected = thresh_optim_df[_filter_].head(1)  
+
+        # Values 
+        ret =  thresh_selected['thresh'].values[0] 
+
+        if verbose:
+            print(f"Optimal Threshold: {ret}")      
+
+        return ret
 
 # Workflow
 
+thresh_optim_df = lead_strategy_create_thresh_table(
+    leads_scored_df,
+    thresh              = np.linspace(0, 1, num = 100),
+    highlight_max_color = "green",
+    verbose             = True
+)
 
+lead_select_optimum_thresh(
+    thresh_optim_df,
+    monthly_sales_reduction_safeguard = 0.85
+)
 
 # 6.0 GET EXPECTED VALUE RESULTS ----
 #  def lead_get_expected_value()
