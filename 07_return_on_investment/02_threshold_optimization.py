@@ -323,7 +323,7 @@ thresh_optim_df = lead_strategy_create_thresh_table(
     verbose             = True
 )
 
-lead_select_optimum_thresh(
+thresh_optim = lead_select_optimum_thresh(
     thresh_optim_df,
     monthly_sales_reduction_safeguard = 0.85
 )
@@ -331,9 +331,31 @@ lead_select_optimum_thresh(
 # 6.0 GET EXPECTED VALUE RESULTS ----
 #  def lead_get_expected_value()
 
+def lead_get_expected_value(thresh_optim_df, threshold = 0.85, verbose = False):
+    
+    # Handle the stylized object
+    try:
+        thresh_optim_df = thresh_optim_df.data
+    except:
+        thresh_optim_df = thresh_optim_df 
+
+    df = thresh_optim_df[thresh_optim_df.thresh >= threshold].head(1)  
+
+    if verbose:
+        print("Expected Value Tables: ")
+        print(df)
+
+    return df      
 
 
-
+# Workflow 
+lead_get_expected_value(
+    thresh_optim_df,
+    threshold  = lead_select_optimum_thresh(
+        thresh_optim_df                 = thresh_optim_df,
+        monthly_sales_reduction_safeguard = 0.90
+    )                    
+)
 # 7.0 PLOT THE OPTIMAL THRESHOLD ----
 #  def lead_plot_optim_thresh()
 
