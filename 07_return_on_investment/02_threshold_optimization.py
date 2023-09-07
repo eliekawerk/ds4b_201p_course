@@ -423,6 +423,61 @@ lead_plot_optim_thresh(
 
 # 8.0 MAKE THE OPTIMAL STRATEGY ----
 
+def lead_score_strategy_optimization(
+    leads_scored_df,
+    thresh                            = np.linspace(0, 1, num = 100),
+    optim_col                         = "expected_value",
+    monthly_sales_reduction_safeguard = 0.90,
+    email_list_size                   = 2e5,
+    unsub_rate_per_sales_email        = 0.005,
+    sales_emails_per_month            = 5,
+    avg_sales_per_month               = 250000,
+    avg_sales_emails_per_month        = 5,
+    customer_conversion_rate          = 0.05,
+    avg_customer_value                = 2000,
+    highlight_max                     = True,
+    highlight_max_color               = "yellow",
+    verbose                           = True    
+):
+    # Lead Strategy create tresh table
+    thresh_optim_df = lead_strategy_create_thresh_table(
+        leads_scored_df            = leads_scored_df,
+        thresh                     = thresh,
+        email_list_size            = email_list_size,
+        unsub_rate_per_sales_email = unsub_rate_per_sales_email,
+        avg_sales_per_month        = avg_sales_per_month,
+        avg_sales_emails_per_month = avg_sales_emails_per_month,
+        customer_conversion_rate   = customer_conversion_rate,
+        avg_customer_value         = avg_customer_value,
+        highlight_max              = highlight_max,
+        highlight_max_color        = highlight_max_color,
+        verbose                    = verbose
+    )
+
+    # Lead Select Optimum thresh
+    thresh_optim = lead_select_optimum_thresh(
+        thresh_optim_df,
+        optim_col                         = optim_col,
+        monthly_sales_reduction_safeguard = monthly_sales_reduction_safeguard,
+        verbose                           = verbose
+        )
+    
+
+    # Expected Value
+    expected_value = lead_get_expected_value(
+        thresh_optim_df, 
+        threshold = thresh_optim,
+          verbose = verbose
+        )
+    
+    # Dictionary for return
+    ret = dict(
+       # lead_strategy_df = lead_strategy_df,
+        expected_value   = expected_value,
+        thresh_optim_df  = thresh_optim_df
+    )
+
+    return ret
 
 
 # FINAL OPTIMIZATION RESULTS ----
@@ -433,7 +488,9 @@ lead_plot_optim_thresh(
 
 # Workflow
 
-
+lead_score_strategy_optimization(
+    leads_scored_df = leads_scored_df
+)
 
 # CONCLUSIONS ----
 
