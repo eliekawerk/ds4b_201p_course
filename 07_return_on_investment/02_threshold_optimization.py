@@ -352,18 +352,74 @@ def lead_get_expected_value(thresh_optim_df, threshold = 0.85, verbose = False):
 lead_get_expected_value(
     thresh_optim_df,
     threshold  = lead_select_optimum_thresh(
-        thresh_optim_df                 = thresh_optim_df,
+        thresh_optim_df                   = thresh_optim_df,
         monthly_sales_reduction_safeguard = 0.90
     )                    
 )
 # 7.0 PLOT THE OPTIMAL THRESHOLD ----
 #  def lead_plot_optim_thresh()
 
+thresh_optim_df
+
+fig = px.line(
+    thresh_optim_df,
+    x = 'thresh',
+    y = 'expected_value'
+)
+
+fig.add_hline(y = 0, line_color = 'black')
+
+fig.add_vline(
+    x          = lead_select_optimum_thresh(thresh_optim_df),
+    line_color = "red",
+    line_dash  = "dash"
+)
+
+fig
+
+def lead_plot_optim_thresh(
+        thresh_optim_df,
+        optim_col               = 'expected_value',
+        monthly_sales_reduction_safeguard = 0.90,
+        verbose                 = False
+):
+
+     # Handle the stylized object
+    try:
+        thresh_optim_df = thresh_optim_df.data
+    except:
+        thresh_optim_df = thresh_optim_df 
 
 
+    fig = px.line(
+    thresh_optim_df,
+    x = 'thresh',
+    y = 'expected_value'
+)
+
+    fig.add_hline(y = 0, line_color = 'black')
+
+    fig.add_vline(
+        x          = lead_select_optimum_thresh(
+            thresh_optim_df,
+            optim_col = optim_col,
+            monthly_sales_reduction_safeguard = monthly_sales_reduction_safeguard
+            ),
+        line_color = "red",
+        line_dash  = "dash"
+    )
+
+    if verbose:
+        print("PLot created")
+    return fig    
 # Workflow
 
-
+lead_plot_optim_thresh(
+    thresh_optim_df,
+    optim_col                         = 'expected_value',
+    monthly_sales_reduction_safeguard = 0.75,
+    verbose                           = True
+)
 
 # 8.0 MAKE THE OPTIMAL STRATEGY ----
 
