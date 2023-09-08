@@ -428,6 +428,7 @@ def lead_score_strategy_optimization(
     thresh                            = np.linspace(0, 1, num = 100),
     optim_col                         = "expected_value",
     monthly_sales_reduction_safeguard = 0.90,
+    for_marketing_team                = True,
     email_list_size                   = 2e5,
     unsub_rate_per_sales_email        = 0.005,
     sales_emails_per_month            = 5,
@@ -445,6 +446,7 @@ def lead_score_strategy_optimization(
         thresh                     = thresh,
         email_list_size            = email_list_size,
         unsub_rate_per_sales_email = unsub_rate_per_sales_email,
+        sales_emails_per_month     = sales_emails_per_month,    
         avg_sales_per_month        = avg_sales_per_month,
         avg_sales_emails_per_month = avg_sales_emails_per_month,
         customer_conversion_rate   = customer_conversion_rate,
@@ -470,11 +472,28 @@ def lead_score_strategy_optimization(
           verbose = verbose
         )
     
+    # Lead Plot
+    thresh_plot = lead_plot_optim_thresh(
+        thresh_optim_df,
+        optim_col                         = optim_col,
+        monthly_sales_reduction_safeguard = monthly_sales_reduction_safeguard,
+        verbose                           = verbose
+        )
+    
+    # Recalculate Lead Strategy
+    lead_strategy_df = lead_make_strategy(
+                       leads_scored_df, 
+                       thresh             = thresh_optim,
+                       for_marketing_team = for_marketing_team,
+                       verbose            = verbose
+                           )
+    
     # Dictionary for return
     ret = dict(
-       # lead_strategy_df = lead_strategy_df,
+        lead_strategy_df = lead_strategy_df,
         expected_value   = expected_value,
-        thresh_optim_df  = thresh_optim_df
+        thresh_optim_df  = thresh_optim_df,
+        thresh_plot      = thresh_plot
     )
 
     return ret
@@ -488,9 +507,21 @@ def lead_score_strategy_optimization(
 
 # Workflow
 
-lead_score_strategy_optimization(
-    leads_scored_df = leads_scored_df
+optimization_results = lead_score_strategy_optimization(
+    leads_scored_df                   = leads_scored_df,
+    monthly_sales_reduction_safeguard = 0.90,
+    verbose                           = True
 )
+
+optimization_results.keys()
+
+optimization_results['lead_strategy_df']
+
+optimization_results['expected_value']
+
+optimization_results['thresh_optim_df']
+
+optimization_results['thresh_plot']
 
 # CONCLUSIONS ----
 
