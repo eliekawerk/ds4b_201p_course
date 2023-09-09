@@ -24,3 +24,8 @@ from .modeling import (
     mlflow_get_best_run,
     mlflow_score_leads
 )
+
+from .lead_strategy import (
+    lead_score_strategy_optimization,
+    lead_plot_optim_thresh
+)
