@@ -11003,3 +11003,65 @@
                                         cv=5)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
 2023-09-09 09:28:55,440:INFO:Checking exceptions
 2023-09-09 09:28:55,440:INFO:Preloading libraries
+2023-09-09 09:47:50,270:INFO:Initializing load_model()
+2023-09-09 09:47:50,271:INFO:load_model(model_name=models/blended_models_final, platform=None, authentication=None, verbose=True)
+2023-09-09 09:47:50,488:INFO:Initializing predict_model()
+2023-09-09 09:47:50,489:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(categorical_features=['country_code'],
+                                      ml_usecase='classification',
+                                      numerical_features=['tag_count',
+                                                          'tag_count_by_optin_day',
+                                                          'tag_aws_webinar',
+                                                          'tag_learning_lab',
+                                                          'tag_learning_lab_05',
+                                                          'tag_learning_lab_09',
+                                                          'tag_learning_lab_11',
+                                                          'tag_learning_lab_12',
+                                                          'tag_learning_lab_13',
+                                                          'tag_learning_lab_14',
+                                                          'tag_learni...
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 CalibratedClassifierCV(base_estimator=VotingClassifier(estimators=[('gbc',
+                                                                                     GradientBoostingClassifier(random_state=123)),
+                                                                                    ('catboost',
+                                                                                     <catboost.core.CatBoostClassifier object at 0x00000260DF139278>),
+                                                                                    ('ada',
+                                                                                     AdaBoostClassifier(random_state=123))],
+                                                                        n_jobs=1,
+                                                                        voting='soft'),
+                                        cv=5)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-09-09 09:47:50,489:INFO:Checking exceptions
+2023-09-09 09:47:50,489:INFO:Preloading libraries
+2023-09-09 17:59:23,432:INFO:Initializing load_model()
+2023-09-09 17:59:23,433:INFO:load_model(model_name=models/blended_models_final, platform=None, authentication=None, verbose=True)
+2023-09-09 17:59:23,708:INFO:Initializing predict_model()
+2023-09-09 17:59:23,709:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(categorical_features=['country_code'],
+                                      ml_usecase='classification',
+                                      numerical_features=['tag_count',
+                                                          'tag_count_by_optin_day',
+                                                          'tag_aws_webinar',
+                                                          'tag_learning_lab',
+                                                          'tag_learning_lab_05',
+                                                          'tag_learning_lab_09',
+                                                          'tag_learning_lab_11',
+                                                          'tag_learning_lab_12',
+                                                          'tag_learning_lab_13',
+                                                          'tag_learning_lab_14',
+                                                          'tag_learni...
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 CalibratedClassifierCV(base_estimator=VotingClassifier(estimators=[('gbc',
+                                                                                     GradientBoostingClassifier(random_state=123)),
+                                                                                    ('catboost',
+                                                                                     <catboost.core.CatBoostClassifier object at 0x00000257DA02C7B8>),
+                                                                                    ('ada',
+                                                                                     AdaBoostClassifier(random_state=123))],
+                                                                        n_jobs=1,
+                                                                        voting='soft'),
+                                        cv=5)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-09-09 17:59:23,709:INFO:Checking exceptions
+2023-09-09 17:59:23,709:INFO:Preloading libraries
