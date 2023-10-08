@@ -29,12 +29,28 @@ leads_df = els.db_read_and_process_els_data()
 
 # 0.0 INTRODUCE YOUR API
 
+@app.get("/")
+async def main():
+
+    content = """
+    <body>
+    <h1>Welcome to the Email Lead Scoring Project</h1>
+    <p> This API helps users score leads using our proprietary
+    lead scoring models.</p>
+    <p> Navigate to the <code>/docs</code> to see the API documentation.</p>
+    </body>
+    """
+    return HTMLResponse(content = content)
 
 
 # 1.0 GET: EXPOSE THE EMAIL SUBSCRIBER DATA AS AN ENDPOINT
+@app.get("/get_email_subscribers")
+async def get_email_subscribers():
 
-    
-    
+    json = leads_df.to_json() 
+
+    return JSONResponse(json)
+
 # 2.0 POST: PASSING DATA TO AN API
 
 

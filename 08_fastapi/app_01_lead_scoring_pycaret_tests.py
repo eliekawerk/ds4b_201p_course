@@ -22,9 +22,13 @@ sample_data_json = sample_data.to_json()
 
 
 # 1.0 GET: EXPOSE DATA FROM AN ENDPOINT
+res = requests.get(
+    "http://127.0.0.1:8000/get_email_subscribers"
+)
 
+res.json()
 
-
+pd.read_json(res.json())
 
 # 2.0 POST: PASS DATA TO AN API
 
