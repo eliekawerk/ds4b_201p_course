@@ -53,13 +53,47 @@ async def get_email_subscribers():
 
 # 2.0 POST: PASSING DATA TO AN API
 
+@app.post("/data")
+async def data(request: Request):
 
+    request_body = await request.body()
 
+    #print(request_body)
+
+    data_json = json.loads(request_body)
+    leads_df = pd.read_json(data_json)
+
+    #print(leads_df)
+
+    leads_json = leads_df.to_json()
+
+    return JSONResponse(leads_json)
 
 # 3.0 MAKING PREDICTIONS FROM AN API
+@app.post("/predict")
+async def predict(request: Request):
+
+    # Handle incoming JSON request
+    request_body = await request.body()
+
+    data_json = json.loads(request_body)
+    leads_df = pd.read_json(data_json)
+
+    # Load model
+    leads_scored_df = els.model_score_leads(
+        data = leads_df,
+        model_path = "models/xgb_model_tuned"
+    )
+
+    #print(leads_scored_df)
 
 
+    # Convert to JSON
+    scores = leads_scored_df[['Score']].to_dict()
 
+    #print(scores)
+
+    return JSONResponse(scores)
 
 # 4.0 POST: MAKE LEAD SCORING STRATEGY
 

@@ -32,12 +32,26 @@ pd.read_json(res.json())
 
 # 2.0 POST: PASS DATA TO AN API
 
+res = requests.post(
+     "http://127.0.0.1:8000/data",
+     json = sample_data_json
+)
 
+res.json()
 
+pd.read_json(res.json())
 
 # 3.0 POST: PASS DATA AND MAKE PREDICTIONS
 
 
+res = requests.post(
+     "http://127.0.0.1:8000/predict",
+     json = full_data_json
+)
+
+res.json()
+
+pd.DataFrame(res.json())
 
 
 # 4.0 POST: PASS DATA AND PARAMETERS
