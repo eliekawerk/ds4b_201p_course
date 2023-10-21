@@ -57,6 +57,29 @@ pd.DataFrame(res.json())
 # 4.0 POST: PASS DATA AND PARAMETERS
 #   TO CALCULATE LEAD STRATEGY FOR MARKETING
 
+res = requests.post(
+     "http://127.0.0.1:8000/calculate_lead_strategy",
+     json = full_data_json,
+     params = dict(
+         monthly_sales_reduction_safeguard=0.9,
+         for_marketing_team=True,
+         email_list_size=200000.0,
+         unsub_rate_per_sales_email=0.005,
+         sales_emails_per_month=5,
+         avg_sales_per_month=250000,
+         avg_sales_emails_per_month=5,
+         customer_conversion_rate=0.05,
+         avg_customer_value=2000
+     )
+)
 
+res.json().keys()
 
+pd.read_json(res.json()['lead_strategy'])
+pd.read_json(res.json()['expected_value'])
+pd.read_json(res.json()['thresh_optim_table'])
+pd.read_json(res.json()['thresh_optim_table']).style.highlight_max()
 
+els.lead_plot_optim_thresh(
+    pd.read_json(res.json()['thresh_optim_table'])
+)

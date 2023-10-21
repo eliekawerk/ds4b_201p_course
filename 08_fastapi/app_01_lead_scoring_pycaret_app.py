@@ -96,8 +96,55 @@ async def predict(request: Request):
     return JSONResponse(scores)
 
 # 4.0 POST: MAKE LEAD SCORING STRATEGY
+@app.post("/calculate_lead_strategy")
+async def calculate_lead_strategy(
+    request: Request,
+    monthly_sales_reduction_safeguard:float=0.9,
+    email_list_size:float=200000.0,
+    unsub_rate_per_sales_email:float=0.005,
+    sales_emails_per_month:int=5,
+    avg_sales_per_month:int=250000,
+    avg_sales_emails_per_month:int=5,
+    customer_conversion_rate:float=0.05,
+    avg_customer_value:int=2000,
+):
 
+    # Handle incoming JSON request
+    request_body = await request.body()
 
+    data_json = json.loads(request_body)
+    leads_df = pd.read_json(data_json)
+
+    # Load model
+    leads_scored_df = els.model_score_leads(
+        data = leads_df,
+        model_path = "models/xgb_model_tuned"
+    )
+
+    # Optimization results
+    optimization_results = els.lead_score_strategy_optimization(
+        leads_scored_df = leads_scored_df,
+        monthly_sales_reduction_safeguard = monthly_sales_reduction_safeguard,
+        email_list_size = email_list_size,
+        unsub_rate_per_sales_email = unsub_rate_per_sales_email, 
+        sales_emails_per_month = sales_emails_per_month,
+        avg_sales_per_month = avg_sales_per_month,
+        avg_sales_emails_per_month = avg_sales_emails_per_month,
+        customer_conversion_rate = customer_conversion_rate,
+        avg_customer_value = avg_customer_value
+    )
+
+    #print(optimization_results)
+
+    results = {
+        'lead_strategy': optimization_results['lead_strategy_df'].to_json(),
+        'expected_value': optimization_results['expected_value'].to_json(),
+        'thresh_optim_table': optimization_results['thresh_optim_df'].data.to_json(),
+
+    }
+
+    return JSONResponse(results)
+    
 
 
 # DEFINE THE API PORT
