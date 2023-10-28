@@ -61,45 +61,86 @@ if uploaded_file:
     # User Inputs - Add Sliders / Buttons
     estimated_monthly_sales = st.number_input(
         "How much in email sales per month ($ on average)", 0, value = 250000, step =1000 )
-    monthly_sales_reduction_safe_guard = st.slider(
+    monthly_sales_reduction_safeguard = st.slider(
         "How much of monthly sales should be mantained (%) ?", 0., 1., 0.9, step = 0.1
     )
     
     #print(monthly_sales_reduction_safe_guard)
 
-    sales_limit = "$(:,.0f)".format
-    (monthly_sales_reduction_safe_guard * estimated_monthly_sales)
+    sales_limit = "${:,.0f}".format
+    (monthly_sales_reduction_safeguard * estimated_monthly_sales)
 
-    st.subheader(f"Monthly sales will not go below: {sales_limit}")
+    st.subheader(f"Monthly sales will not go below:{sales_limit}")
     
     
     # Run Analysis 
     
+    if st.button("Run Analysis"):
+
         # Spinner
-        
+        with st.spinner("Lead Scoring in progress. Almost done ..."):
             
             # Make Request
+            res = requests.post(
+                url    = f"{ENDPOINT}/calculate_lead_strategy",
+                json   = full_data_json,
+                params =dict( monthly_sales_reduction_safeguard = float(monthly_sales_reduction_safeguard),
+                        email_list_size                     = 100000,
+                        unsub_rate_per_sales_email          = 0.005,
+                        sales_emails_per_month              = 5,
+                        avg_sales_per_month                 = float(estimated_monthly_sales),
+                        avg_sales_emails_per_month          = 5,
+                        customer_conversion_rate            = 0.05,
+                        avg_customer_value                  = 2000.0
+            )
+            )
             
-            
+            print(pd.read_json(res.json()['expected_value']))
             
             # Collect JSON / Convert Data
             
             
-            
+            print(res.json().keys())
+
+            lead_strategy_df = pd.read_json(res.json()['lead_strategy'])
+
+            expected_value_df = pd.read_json(res.json()['expected_value'])
+
+            thresh_optim_table_df  = pd.read_json(res.json()['thresh_optim_table'])
+
+            #print(thresh_optim_table_df)
+
             # Display Results
-            
+            st.success("Success! Lead Scoring is complete.Download the results below")
             
             # Display Strategy Summary
-            
-            
+            st.subheader("Lead Strategy Summary: ")
+            st.write(expected_value_df)
+
             # Display Expected Value Plot
-            
-            
+            st.subheader("Expected Value Plot")
+            st.plotly_chart(
+                els.lead_plot_optim_thresh(
+                    thresh_optim_table_df,
+                    monthly_sales_reduction_safeguard = monthly_sales_reduction_safeguard
+                )
+            )
             
             # Display Sample Lead Strategy
             
-            
+            st.subheader("Sample of Lead Strategy (First 10 Rows)")
+            st.write(lead_strategy_df.head(10))
+
             # Download button - Get lead scoring results
-            
+             
+            st.download_button(
+                label     = "Download Lead Scoring Strategy",
+                data      = lead_strategy_df.to_csv(index = False),
+                file_name = 'lead_strategy.csv',
+                mime      = "text/csv",
+                key       = 'download-csv'
+            ) 
+
+
         
     
