@@ -90,6 +90,7 @@ enc = OneHotEncoder(handle_unknown ='ignore')
 
 transformer = make_column_transformer(
     (enc,['country_code'])
+    remainder= "passthrough"
 )
 
 # Make a Pipeline

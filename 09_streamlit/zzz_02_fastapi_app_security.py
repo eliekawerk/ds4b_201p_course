@@ -123,7 +123,7 @@ async def predict(request: Request):
 @app.post("/calculate_lead_strategy", dependencies=[Depends(get_api_key)])
 async def calculate_lead_strategy(
     request: Request,
-    monthly_sales_reduction_safe_gaurd: float=0.9,
+    monthly_sales_reduction_safeguard:float=0.9,
     email_list_size:int=100000,
     unsub_rate_per_sales_email:float=0.005,
     sales_emails_per_month:int=5,
@@ -149,7 +149,7 @@ async def calculate_lead_strategy(
     optimization_results = els.lead_score_strategy_optimization(
         leads_scored_df=leads_scored_df,
         
-        monthly_sales_reduction_safe_gaurd=monthly_sales_reduction_safe_gaurd,
+        monthly_sales_reduction_safeguard=monthly_sales_reduction_safeguard,
         
         email_list_size=email_list_size,
         unsub_rate_per_sales_email=unsub_rate_per_sales_email,
